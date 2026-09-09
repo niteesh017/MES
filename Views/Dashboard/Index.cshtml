@@ -1,0 +1,3197 @@
+﻿@{
+    ViewData["Title"] = "MES Dashboard";
+}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+
+    body {
+        background: #f5f6f8;
+    }
+
+    .section-card {
+        background: #ffffff;
+        border: 1px solid #e3e7ec;
+        border-radius: 11px;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
+        overflow: hidden;
+    }
+
+    .section-header {
+        min-height: 52px;
+        padding: 12px 18px;
+        border-bottom: 1px solid #e8ebef;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #1f2937;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .section-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .section-icon {
+        width: 31px;
+        height: 31px;
+        border-radius: 7px;
+        background: #f1f3f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+    .section-body {
+        padding: 18px;
+    }
+
+    .status-running {
+        color: #198754;
+    }
+
+    .status-stopped {
+        color: #64748b;
+    }
+
+    .status-fault {
+        color: #dc3545;
+    }
+
+    .section-title {
+        color: #1f2937;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .progress-bar {
+        font-size: 10px;
+        font-weight: 700;
+        transition: width .4s ease;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+
+    .badge-soft {
+        padding: 6px 9px;
+        background: #f1f3f5;
+        color: #475569;
+        border-radius: 13px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .no-batch {
+        padding: 20px;
+        background: #f8fafc;
+        border: 1px dashed #d8dee6;
+        border-radius: 8px;
+        color: #7b8490;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .grade-distribution {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 45px;
+        min-height: 260px;
+        width: 100%;
+        padding: 10px 15px;
+    }
+
+    .grade-chart-wrapper {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        min-width: 300px;
+        min-height: 300px;
+        flex: 0 0 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .grade-chart-wrapper canvas {
+            display: block;
+        }
+
+    .grade-chart-center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        pointer-events: none;
+    }
+
+    .grade-total-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #64748b;
+    }
+
+    .grade-total-value {
+        margin-top: 4px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #334155;
+    }
+
+    .grade-legend {
+        flex: 1;
+        min-width: 200px;
+        max-width: 280px;
+        margin-left: 10px;
+    }
+
+    .grade-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 44px;
+        padding: 8px 0;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+        .grade-legend-item:last-child {
+            border-bottom: none;
+        }
+
+    .grade-dot {
+        width: 11px;
+        height: 11px;
+        min-width: 11px;
+        min-height: 11px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .grade-1 {
+        background: #10b981;
+    }
+
+    .grade-2 {
+        background: #3b82f6;
+    }
+
+    .grade-3 {
+        background: #f59e0b;
+    }
+
+    .grade-4 {
+        background: #ef4444;
+    }
+
+    .grade-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .grade-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+        white-space: nowrap;
+    }
+
+    .grade-info > span:last-child {
+        font-size: 12px;
+        font-weight: 500;
+        color: #475569;
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    @@media (max-width: 768px) {
+
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .chart-container {
+            height: 250px;
+        }
+    }
+
+    @@media (max-width: 1200px) {
+
+        .grade-distribution {
+            gap: 50px;
+        }
+
+        .grade-chart-wrapper {
+            width: 200px;
+            height: 200px;
+            min-width: 200px;
+            min-height: 200px;
+            flex-basis: 200px;
+        }
+
+        .grade-legend {
+            max-width: 250px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+
+        .grade-distribution {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            padding: 10px 0;
+        }
+
+        .grade-chart-wrapper {
+            width: 170px;
+            height: 170px;
+            min-width: 170px;
+            min-height: 170px;
+        }
+
+            .grade-chart-wrapper canvas {
+                width: 170px !important;
+                height: 170px !important;
+                max-width: 170px !important;
+                max-height: 170px !important;
+            }
+
+        .grade-legend {
+            width: 100%;
+            max-width: 100%;
+            margin-left: 0;
+        }
+    }
+
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           asp-controller="Dashboard"
+           asp-action="Index">
+            MES Dashboard
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mesNavbar"
+                aria-controls="mesNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse" id="mesNavbar">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Dashboard"
+                       asp-action="Index">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Machine"
+                       asp-action="Index">
+                        Machines
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="ProductionOrder"
+                       asp-action="Index">
+                        Production Orders
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="ProductionBatch"
+                       asp-action="Index">
+                        Batches
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- Machine KPI -->
+<div class="row g-3 mb-3">
+
+    <!-- Machine Status -->
+    <div class="col-sm-6 col-md-3">
+
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-success bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-cpu-fill fs-2 text-success"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div id="machineStatus"
+                                 class="fs-4 fw-bold text-dark">
+                                --
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.1rem;">
+                                Machine Status
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <span id="machineCode"
+                          class="fw-bold text-success"
+                          style="font-size:0.75rem;">
+                        Machine
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Machine Speed -->
+    <div class="col-sm-6 col-md-3">
+
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-primary bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-speedometer2 fs-2 text-primary"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div class="fs-4 fw-bold text-dark">
+                                <span id="machineSpeed">0</span>
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.1rem;">
+                                Machine Speed
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <span class="fw-bold text-primary"
+                          style="font-size:0.75rem;">
+                        RPM
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Current Batch Production -->
+    <div class="col-sm-6 col-md-3">
+
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-warning bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-box-seam-fill fs-2 text-warning"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div class="fs-4 fw-bold text-dark">
+                                <span id="batchProduced">0</span>
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.1rem;">
+                                Current Batch Production
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <span class="fw-bold text-warning"
+                          style="font-size:0.75rem;">
+                        KG
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Total Production -->
+    <div class="col-sm-6 col-md-3">
+
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-danger bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-bar-chart-fill fs-2 text-danger"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div class="fs-4 fw-bold text-dark">
+                                <span id="totalProduction">0</span>
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.1rem;">
+                                Total Production
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <span class="fw-bold text-danger"
+                          style="font-size:0.75rem;">
+                        KG
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Current Production + System Status -->
+<div class="row g-3 mb-3">
+
+    <!-- Current Production -->
+    <div class="col-xl-9">
+
+        <div class="section-card h-100"
+             style="background:rgba(128,128,128,0.08);">
+
+            <div class="section-body"
+                 style="padding:10px 14px;">
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-gear-wide-connected text-secondary"
+                           style="font-size:0.9rem;"></i>
+
+                        <strong class="section-title"
+                                style="font-size:0.95rem;">
+                            Current Production
+                        </strong>
+
+                    </div>
+
+                    <span id="batchStatus"
+                          class="badge bg-secondary"
+                          style="font-size:0.68rem;padding:5px 8px;">
+                        No Batch
+                    </span>
+
+                </div>
+
+                <!-- No Batch -->
+                <div id="noBatchMessage"
+                     class="no-batch"
+                     style="display:none;">
+
+                    <i class="bi bi-info-circle me-1"></i>
+                    No running production batch.
+
+                </div>
+
+                <!-- Production Content -->
+                <div id="productionOrderContent">
+
+                    <div class="row g-2">
+
+                        <div class="col-xl-3 col-md-6">
+
+                            <div class="border-start border-2 ps-2"
+                                 style="border-color:#adb5bd !important;">
+
+                                <div class="text-muted fw-semibold"
+                                     style="font-size:0.7rem;">
+                                    Production Order
+                                </div>
+
+                                <div id="orderNumber"
+                                     class="fw-bold text-dark"
+                                     style="font-size:0.95rem;">
+                                    --
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+
+                            <div class="border-start border-2 ps-2"
+                                 style="border-color:#adb5bd !important;">
+
+                                <div class="text-muted fw-semibold"
+                                     style="font-size:0.7rem;">
+                                    Product
+                                </div>
+
+                                <div id="productName"
+                                     class="fw-bold text-dark"
+                                     style="font-size:0.95rem;">
+                                    --
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+
+                            <div class="border-start border-2 ps-2"
+                                 style="border-color:#adb5bd !important;">
+
+                                <div class="text-muted fw-semibold"
+                                     style="font-size:0.7rem;">
+                                    Active Batch
+                                </div>
+
+                                <div id="batchNumber"
+                                     class="fw-bold text-dark"
+                                     style="font-size:0.95rem;">
+                                    --
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+
+                            <div class="border-start border-2 ps-2"
+                                 style="border-color:#adb5bd !important;">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div class="text-muted fw-semibold"
+                                         style="font-size:0.7rem;">
+                                        Target Quantity
+                                    </div>
+
+                                    <span class="text-secondary fw-bold"
+                                          style="font-size:0.65rem;">
+                                        KG
+                                    </span>
+
+                                </div>
+
+                                <div id="targetQuantity"
+                                     class="fw-bold text-dark"
+                                     style="font-size:0.95rem;">
+                                    0
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Production Progress -->
+                    <div class="mt-2">
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+
+                            <span class="text-muted fw-semibold"
+                                  style="font-size:0.7rem;">
+                                Production Progress
+                            </span>
+
+                            <strong id="productionPercentage"
+                                    class="text-success"
+                                    style="font-size:0.75rem;">
+                                0%
+                            </strong>
+
+                        </div>
+
+                        <div class="progress"
+                             style="height:12px;
+                            background:#dee2e6;
+                            border-radius:5px;
+                            overflow:hidden;">
+
+                            <div id="productionProgress"
+                                 class="progress-bar"
+                                 role="progressbar"
+                                 style="width:0%;
+                                height:100%;
+                                border-radius:5px;
+                                background:linear-gradient(90deg,#20c997,#198754);
+                                transition:width 0.5s ease;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- System Status -->
+    <div class="col-xl-3">
+
+        <div class="section-card h-100"
+             style="background:rgba(128,128,128,0.08);">
+
+            <div class="section-body"
+                 style="padding:14px 16px;">
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-activity text-dark"
+                           style="font-size:1rem;"></i>
+
+                        <span class="fw-bold text-dark"
+                              style="font-size:0.9rem;">
+                            System Status
+                        </span>
+
+                    </div>
+
+                    <span class="badge bg-dark-subtle text-white"
+                          style="font-size:0.68rem;padding:5px 8px;">
+                        NX1P2
+                    </span>
+
+                </div>
+
+                <!-- PLC -->
+                <div class="d-flex align-items-center justify-content-between
+                    border rounded px-3 py-2 mb-2"
+                     style="background:rgba(128,128,128,0.08);">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-cpu text-dark"
+                           style="font-size:0.9rem;"></i>
+
+                        <span class="fw-semibold text-black"
+                              style="font-size:0.75rem;">
+                            PLC
+                        </span>
+
+                    </div>
+
+                    <span id="plcStatus"
+                          class="badge bg-success"
+                          style="font-size:0.68rem;padding:5px 8px;">
+                        Connected
+                    </span>
+
+                </div>
+
+                <!-- Last Update -->
+                <div class="d-flex align-items-center justify-content-between
+                    border rounded px-3 py-2"
+                     style="background:rgba(128,128,128,0.08);">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-clock-history text-dark"
+                           style="font-size:0.9rem;"></i>
+
+                        <span class="fw-semibold text-black"
+                              style="font-size:0.75rem;">
+                            Last Update
+                        </span>
+
+                    </div>
+
+                    <span id="lastUpdate"
+                          class="fw-bold text-dark"
+                          style="font-size:0.72rem;">
+                        --
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@* <!-- Production KPI -->
+<div class="row g-3 mb-3">
+
+    <!-- Input Weight -->
+    <div class="col-sm-6 col-md-3">
+
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-secondary bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-box-arrow-in-down fs-2 text-secondary"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div id="inputWeight"
+                                 class="fs-4 fw-bold text-dark">
+                                0
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.05rem;line-height:1.15;">
+                                Input Weight
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="position-relative"
+                         style="height:70px;min-width:120px;">
+
+                        <span class="position-absolute top-0 end-0
+                            fw-bold text-secondary"
+                              style="font-size:0.75rem;">
+                            KG
+                        </span>
+
+                        <span class="position-absolute bottom-0 end-0
+                            text-muted text-end"
+                              style="font-size:0.68rem;
+                            line-height:1;
+                            white-space:nowrap;">
+                            Current PLC input
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Output Weight -->
+    <div class="col-sm-6 col-md-3">
+
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-primary bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-box-arrow-up fs-2 text-primary"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div id="outputWeight"
+                                 class="fs-4 fw-bold text-dark">
+                                0
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.05rem;line-height:1.15;">
+                                Output Weight
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="position-relative"
+                         style="height:70px;min-width:120px;">
+
+                        <span class="position-absolute top-0 end-0
+                            fw-bold text-primary"
+                              style="font-size:0.75rem;">
+                            KG
+                        </span>
+
+                        <span class="position-absolute bottom-0 end-0
+                            text-muted text-end"
+                              style="font-size:0.68rem;
+                            line-height:1;
+                            white-space:nowrap;">
+                            Current machine output
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Good Production -->
+    <div class="col-sm-6 col-md-3">
+
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-success bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-check-circle-fill fs-2 text-success"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div id="batchGood"
+                                 class="fs-4 fw-bold text-success">
+                                0
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.05rem;line-height:1.15;">
+                                Good Production
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="position-relative"
+                         style="height:70px;min-width:170px;">
+
+                        <span class="position-absolute top-0 end-0
+                            fw-bold text-success"
+                              style="font-size:0.75rem;">
+                            KG
+                        </span>
+
+                        <span class="position-absolute bottom-0 end-0
+                            text-muted text-end"
+                              style="font-size:0.68rem;
+                            line-height:1;
+                            white-space:nowrap;">
+                            Grade 1 + Grade 2 + Grade 3
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Reject Production -->
+    <div class="col-sm-6 col-md-3">
+
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-danger bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-x-circle-fill fs-2 text-danger"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div id="batchReject"
+                                 class="fs-4 fw-bold text-danger">
+                                0
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.05rem;line-height:1.15;">
+                                Reject Production
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="position-relative"
+                         style="height:70px;min-width:120px;">
+
+                        <span class="position-absolute top-0 end-0
+                            fw-bold text-danger"
+                              style="font-size:0.75rem;">
+                            KG
+                        </span>
+
+                        <span class="position-absolute bottom-0 end-0
+                            text-muted text-end"
+                              style="font-size:0.68rem;
+                            line-height:1;
+                            white-space:nowrap;">
+                            Grade 4 / Reject
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+    <!-- Grade-wise Output -->
+    <div class="col-xl-4">
+
+        <div class="section-card h-100" style="background:rgba(128,128,128,0.1);">
+
+            <div class="section-body">
+
+                <div class="section-title-wrap mb-3">
+
+                    <div class="section-icon">
+                        📊
+                    </div>
+
+                    <span>
+                        <strong>Grade-wise Output</strong>
+                    </span>
+
+                    <span class="badge-soft ms-auto">
+                        Real-Time
+                    </span>
+
+                </div>
+
+                <div class="grade-distribution">
+
+                    <div class="grade-chart-wrapper">
+
+                        <canvas id="gradeChart"></canvas>
+
+                        <div class="grade-chart-center">
+
+                            <span class="grade-total-label">
+                                Total Output
+                            </span>
+
+                            <span id="gradeTotal"
+                                  class="grade-total-value">
+                                0.00 KG
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div id="gradeLegend"
+                         class="grade-legend">
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-1"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 1
+                                </span>
+
+                                <span id="grade1Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-2"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 2
+                                </span>
+
+                                <span id="grade2Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-3"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 3
+                                </span>
+
+                                <span id="grade3Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-4"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 4 / Rejected
+                                </span>
+
+                                <span id="grade4Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+</div>
+ *@
+
+<!-- Production KPI -->
+<div class="row g-3 mb-3">
+
+    <!-- LEFT: Production KPIs -->
+    <div class="col-xl-6">
+
+        <div class="row g-4">
+
+            <!-- Input Weight -->
+            <div class="col-sm-6">
+
+                <div class="card border rounded"
+                     style="height:110px;
+                    background:rgba(128,128,128,0.1);">
+
+                    <div class="card-body py-2">
+
+                        <div class="d-flex justify-content-between align-items-center h-100">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="rounded-circle bg-secondary bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:70px;height:70px;">
+
+                                    <i class="bi bi-box-arrow-in-down fs-2 text-secondary"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <div id="inputWeight"
+                                         class="fs-4 fw-bold text-dark">
+                                        0
+                                    </div>
+
+                                    <div class="fw-bold text-muted"
+                                         style="font-size:1.05rem;line-height:1.15;">
+                                        Input Weight
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="position-relative"
+                                 style="height:70px;min-width:120px;">
+
+                                <span class="position-absolute top-0 end-0
+                                    fw-bold text-secondary"
+                                      style="font-size:0.75rem;">
+                                    KG
+                                </span>
+
+                                <span class="position-absolute bottom-0 end-0
+                                    text-muted text-end"
+                                      style="font-size:0.68rem;
+                                    line-height:1;
+                                    white-space:nowrap;">
+                                    Current PLC input
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Output Weight -->
+            <div class="col-sm-6">
+
+                <div class="card border rounded"
+                     style="height:110px;
+                    background:rgba(128,128,128,0.1);">
+
+                    <div class="card-body py-2">
+
+                        <div class="d-flex justify-content-between align-items-center h-100">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="rounded-circle bg-primary bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:70px;height:70px;">
+
+                                    <i class="bi bi-box-arrow-up fs-2 text-primary"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <div id="outputWeight"
+                                         class="fs-4 fw-bold text-dark">
+                                        0
+                                    </div>
+
+                                    <div class="fw-bold text-muted"
+                                         style="font-size:1.05rem;line-height:1.15;">
+                                        Output Weight
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="position-relative"
+                                 style="height:70px;min-width:120px;">
+
+                                <span class="position-absolute top-0 end-0
+                                    fw-bold text-primary"
+                                      style="font-size:0.75rem;">
+                                    KG
+                                </span>
+
+                                <span class="position-absolute bottom-0 end-0
+                                    text-muted text-end"
+                                      style="font-size:0.68rem;
+                                    line-height:1;
+                                    white-space:nowrap;">
+                                    Current machine output
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Good Production -->
+            <div class="col-sm-6">
+
+                <div class="card border rounded"
+                     style="height:110px;
+                    background:rgba(128,128,128,0.1);">
+
+                    <div class="card-body py-2">
+
+                        <div class="d-flex justify-content-between align-items-center h-100">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="rounded-circle bg-success bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:70px;height:70px;">
+
+                                    <i class="bi bi-check-circle-fill fs-2 text-success"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <div id="batchGood"
+                                         class="fs-4 fw-bold text-success">
+                                        0
+                                    </div>
+
+                                    <div class="fw-bold text-muted"
+                                         style="font-size:1.05rem;line-height:1.15;">
+                                        Good Production
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="position-relative"
+                                 style="height:70px;min-width:170px;">
+
+                                <span class="position-absolute top-0 end-0
+                                    fw-bold text-success"
+                                      style="font-size:0.75rem;">
+                                    KG
+                                </span>
+
+                                <span class="position-absolute bottom-0 end-0
+                                    text-muted text-end"
+                                      style="font-size:0.68rem;
+                                    line-height:1;
+                                    white-space:nowrap;">
+                                    Grade 1 + Grade 2 + Grade 3
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Reject Production -->
+            <div class="col-sm-6">
+
+                <div class="card border rounded"
+                     style="height:110px;
+                    background:rgba(128,128,128,0.1);">
+
+                    <div class="card-body py-2">
+
+                        <div class="d-flex justify-content-between align-items-center h-100">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="rounded-circle bg-danger bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:70px;height:70px;">
+
+                                    <i class="bi bi-x-circle-fill fs-2 text-danger"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <div id="batchReject"
+                                         class="fs-4 fw-bold text-danger">
+                                        0
+                                    </div>
+
+                                    <div class="fw-bold text-muted"
+                                         style="font-size:1.05rem;line-height:1.15;">
+                                        Reject Production
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="position-relative"
+                                 style="height:70px;min-width:120px;">
+
+                                <span class="position-absolute top-0 end-0
+                                    fw-bold text-danger"
+                                      style="font-size:0.75rem;">
+                                    KG
+                                </span>
+
+                                <span class="position-absolute bottom-0 end-0
+                                    text-muted text-end"
+                                      style="font-size:0.68rem;
+                                    line-height:1;
+                                    white-space:nowrap;">
+                                    Grade 4 / Reject
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+@*     <!-- RIGHT: Grade-wise Output -->
+    <div class="col-xl-6">
+
+        <div class="section-card"
+             style="height:244px;
+            background:rgba(128,128,128,0.1);">
+
+            <div class="section-body"
+                 style="padding:12px 18px;">
+
+                <div class="section-title-wrap mb-2">
+
+                    <div class="section-icon">
+                        📊
+                    </div>
+
+                    <span>
+                        <strong>Grade-wise Output</strong>
+                    </span>
+
+                    <span class="badge-soft ms-auto">
+                        Production Feed
+                    </span>
+
+                </div>
+
+
+                <div class="grade-distribution"
+                     style="min-height:180px;
+                    height:180px;
+                    padding:0 10px;
+                    gap:20px;">
+
+                    <div class="grade-chart-wrapper"
+                         style="width:180px;
+                        height:180px;
+                        min-width:180px;
+                        min-height:180px;
+                        flex:0 0 180px;">
+
+                        <canvas id="gradeChart"></canvas>
+
+                        <div class="grade-chart-center">
+
+                            <span class="grade-total-label">
+                                Total Output
+                            </span>
+
+                            <span id="gradeTotal"
+                                  class="grade-total-value">
+                                0.00 KG
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="gradeLegend"
+                         class="grade-legend">
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-1"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 1
+                                </span>
+
+                                <span id="grade1Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-2"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 2
+                                </span>
+
+                                <span id="grade2Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-3"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 3
+                                </span>
+
+                                <span id="grade3Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-4"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 4 / Rejected
+                                </span>
+
+                                <span id="grade4Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+ *@
+@*  ```html
+<!-- RIGHT: Grade-wise Output -->
+<div class="col-xl-6">
+
+    <div class="section-card"
+         style="height:244px;
+                background:rgba(128,128,128,0.1);">
+
+        <div class="section-body"
+             style="padding:12px 18px;">
+
+            <div class="section-title-wrap mb-2">
+
+                <div class="section-icon">
+                    📊
+                </div>
+
+                <span>
+                    <strong>Grade-wise Output</strong>
+                </span>
+
+                <span class="badge-soft ms-auto">
+                    Production Feed
+                </span>
+
+            </div>
+
+            <div class="grade-distribution"
+                 style="min-height:180px;
+                        height:180px;
+                        padding:0 10px;
+                        gap:20px;">
+
+                <!-- CHART -->
+                <div class="grade-chart-wrapper"
+                     style="width:180px;
+                            height:180px;
+                            min-width:180px;
+                            min-height:180px;
+                            flex:0 0 180px;">
+
+                    <canvas id="gradeChart"></canvas>
+
+                    <div class="grade-chart-center">
+
+                        <span class="grade-total-label">
+                            Total Output
+                        </span>
+
+                        <span id="gradeTotal"
+                              class="grade-total-value">
+                            0.00 KG
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GRADE LEGEND -->
+                <div id="gradeLegend"
+                     class="grade-legend">
+
+                    <div class="grade-legend-item">
+
+                        <span class="grade-dot grade-1"></span>
+
+                        <div class="grade-info">
+
+                            <span class="grade-title">
+                                Grade 1
+                            </span>
+
+                            <span id="grade1Legend">
+                                0.00 KG (0.0%)
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="grade-legend-item">
+
+                        <span class="grade-dot grade-2"></span>
+
+                        <div class="grade-info">
+
+                            <span class="grade-title">
+                                Grade 2
+                            </span>
+
+                            <span id="grade2Legend">
+                                0.00 KG (0.0%)
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="grade-legend-item">
+
+                        <span class="grade-dot grade-3"></span>
+
+                        <div class="grade-info">
+
+                            <span class="grade-title">
+                                Grade 3
+                            </span>
+
+                            <span id="grade3Legend">
+                                0.00 KG (0.0%)
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="grade-legend-item">
+
+                        <span class="grade-dot grade-4"></span>
+
+                        <div class="grade-info">
+
+                            <span class="grade-title">
+                                Grade 4 / Rejected
+                            </span>
+
+                            <span id="grade4Legend">
+                                0.00 KG (0.0%)
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRODUCTION SUMMARY -->
+                <div class="production-summary">
+
+                    <div class="production-summary-header">
+                        <span>📈</span>
+                        <strong>Production Summary</strong>
+                    </div>
+
+                    <div class="production-summary-grid">
+
+                        <div class="production-summary-item">
+                            <span>Total Input</span>
+                            <strong id="totalInput">
+                                0.00 KG
+                            </strong>
+                        </div>
+
+                        <div class="production-summary-item">
+                            <span>Accepted</span>
+                            <strong id="acceptedOutput">
+                                0.00 KG
+                            </strong>
+                        </div>
+
+                        <div class="production-summary-item">
+                            <span>Rejected</span>
+                            <strong id="rejectedOutput">
+                                0.00 KG
+                            </strong>
+                        </div>
+
+                        <div class="production-summary-item">
+                            <span>Yield</span>
+                            <strong id="yieldPercentage">
+                                0.0%
+                            </strong>
+                        </div>
+
+                        <div class="production-summary-item">
+                            <span>Production Rate</span>
+                            <strong id="productionRate">
+                                --
+                            </strong>
+                        </div>
+
+                        <div class="production-summary-item">
+                            <span>Efficiency</span>
+                            <strong id="efficiency">
+                                --
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+ *@
+
+
+   @*  <!-- RIGHT: Grade-wise Output -->
+    <div class="col-xl-6">
+
+        <div class="section-card"
+             style="height:244px;
+            background:rgba(128,128,128,0.1);">
+
+            <div class="section-body"
+                 style="padding:12px 18px;">
+
+                <div class="section-title-wrap mb-2">
+
+                    <div class="section-icon">
+                        📊
+                    </div>
+
+                    <span>
+                        <strong>Grade-wise Output</strong>
+                    </span>
+
+                    <span class="badge-soft ms-auto">
+                        Production Feed
+                    </span>
+
+                </div>
+
+                <div class="grade-distribution"
+                     style="min-height:180px;
+                    height:180px;
+                    padding:0 10px;
+                    gap:20px;">
+
+                    <div class="grade-chart-wrapper"
+                         style="width:180px;
+                        height:180px;
+                        min-width:180px;
+                        min-height:180px;
+                        flex:0 0 180px;">
+
+                        <canvas id="gradeChart"></canvas>
+
+                        <div class="grade-chart-center">
+
+                            <span class="grade-total-label">
+                                Total Output
+                            </span>
+
+                            <span id="gradeTotal"
+                                  class="grade-total-value">
+                                0.00 KG
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div id="gradeLegend"
+                         class="grade-legend">
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-1"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 1
+                                </span>
+
+                                <span id="grade1Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-2"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 2
+                                </span>
+
+                                <span id="grade2Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-3"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 3
+                                </span>
+
+                                <span id="grade3Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-4"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 4 / Rejected
+                                </span>
+
+                                <span id="grade4Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="grade-trend-section"
+                         style="flex:1;
+                        min-width:0;
+                        height:180px;">
+
+                    
+
+                        <div style="height:150px;
+                            width:100%;
+                            position:relative;">
+
+                            <canvas id="gradeTrendChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+ *@
+
+    <!-- RIGHT: Grade-wise Output -->
+    <div class="col-xl-6">
+
+        <div class="section-card"
+             style="height:244px;
+            background:rgba(128,128,128,0.1);">
+
+            <div class="section-body"
+                 style="padding:12px 18px;">
+
+                <div class="section-title-wrap mb-2">
+
+                    <div class="section-icon">
+                        📊
+                    </div>
+
+                    <span>
+                        <strong>Grade-wise Output</strong>
+                    </span>
+
+                    <span class="badge-soft ms-auto">
+                        Production Feed
+                    </span>
+
+                </div>
+
+                <div class="grade-distribution"
+                     style="min-height:180px;
+                    height:180px;
+                    padding:0 10px;
+                    gap:20px;">
+
+                    <div class="grade-chart-wrapper"
+                         style="width:180px;
+                        height:180px;
+                        min-width:180px;
+                        min-height:180px;
+                        flex:0 0 180px;">
+
+                        <canvas id="gradeChart"></canvas>
+
+                        <div class="grade-chart-center">
+
+                            <span class="grade-total-label">
+                                Total Output
+                            </span>
+
+                            <span id="gradeTotal"
+                                  class="grade-total-value">
+                                0.00 KG
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div id="gradeLegend"
+                         class="grade-legend">
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-1"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 1
+                                </span>
+
+                                <span id="grade1Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-2"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 2
+                                </span>
+
+                                <span id="grade2Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-3"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 3
+                                </span>
+
+                                <span id="grade3Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="grade-legend-item">
+
+                            <span class="grade-dot grade-4"></span>
+
+                            <div class="grade-info">
+
+                                <span class="grade-title">
+                                    Grade 4 / Rejected
+                                </span>
+
+                                <span id="grade4Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="grade-trend-section"
+                         style="flex:1;
+                        min-width:0;
+                        height:180px;
+                        position:relative;">
+
+                        <div style="height:180px;
+                            width:100%;
+                            position:relative;">
+
+                            <canvas id="gradeTrendChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+<!-- Production Output Trend -->
+<div class="row g-3 mb-3">
+
+    <div class="col-xl-8">
+
+        <div class="section-card h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="section-body">
+
+                <div class="section-title-wrap mb-3">
+
+                    <div class="section-icon">
+                        📈
+                    </div>
+
+                    <span>
+                        <strong>Production Output Trend</strong>
+                    </span>
+
+                    <span class="badge-soft ms-auto">
+                        Live PLC Output
+                    </span>
+
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="productionTrendChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div> 
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const connection =
+        new signalR.HubConnectionBuilder()
+            .withUrl("/mesHub")
+            .withAutomaticReconnect()
+            .build();
+
+    const trendLabels = [];
+    const productionTrendData = [];
+
+    const gradeTrendLabels = [];
+    const grade1TrendData = [];
+    const grade2TrendData = [];
+    const grade3TrendData = [];
+    const grade4TrendData = [];
+
+    let productionTrendChart;
+    let gradeChart;
+    let gradeTrendChart;
+
+    let lastGradeValues = [null, null, null, null];
+
+    function createCharts() {
+
+        const trendContext =
+            document.getElementById("productionTrendChart");
+
+        if (trendContext) {
+
+            productionTrendChart =
+                new Chart(trendContext, {
+
+                    type: "line",
+
+                    data: {
+                        labels: trendLabels,
+
+                        datasets: [{
+                            label: "Output",
+                            data: productionTrendData,
+                            borderWidth: 2,
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 0,
+                            pointHoverRadius: 5
+                        }]
+                    },
+
+                    options: {
+
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: false,
+
+                        interaction: {
+                            intersect: false,
+                            mode: "index"
+                        },
+
+                        plugins: {
+
+                            legend: {
+                                display: true,
+                                position: "top",
+                                align: "end"
+                            },
+
+                            tooltip: {
+                                callbacks: {
+
+                                    label: function(context) {
+
+                                        return "Output: " +
+                                            Number(
+                                                context.parsed.y
+                                            ).toFixed(2) +
+                                            " KG";
+                                    }
+                                }
+                            }
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                },
+
+                                ticks: {
+                                    maxTicksLimit: 6,
+                                    autoSkip: true,
+                                    maxRotation: 0,
+                                    minRotation: 0
+                                }
+                            },
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    callback: function(value) {
+
+                                        return value + " KG";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+        }
+
+        const gradeContext =
+            document.getElementById("gradeChart");
+
+        if (gradeContext) {
+
+            gradeChart =
+                new Chart(gradeContext, {
+
+                    type: "doughnut",
+
+                    data: {
+
+                        labels: [
+                            "Grade 1",
+                            "Grade 2",
+                            "Grade 3",
+                            "Grade 4 / Reject"
+                        ],
+
+                        datasets: [{
+
+                            data: [
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+
+                            backgroundColor: [
+                                "#10B981",
+                                "#3B82F6",
+                                "#F59E0B",
+                                "#EF4444"
+                            ],
+
+                            borderColor: "#FFFFFF",
+                            borderWidth: 3,
+                            hoverOffset: 0
+                        }]
+                    },
+
+                    options: {
+
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        cutout: "50%",
+
+                        animation: false,
+
+                        resizeDelay: 100,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label: function(context) {
+
+                                        return context.label +
+                                            ": " +
+                                            Number(
+                                                context.raw
+                                            ).toFixed(2) +
+                                            " KG";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+        }
+
+        const gradeTrendContext =
+            document.getElementById("gradeTrendChart");
+
+        if (gradeTrendContext) {
+
+            gradeTrendChart =
+                new Chart(gradeTrendContext, {
+
+                    type: "line",
+
+                    data: {
+
+                        labels: gradeTrendLabels,
+
+                        datasets: [
+
+                            {
+                                label: "Grade 1",
+                                data: grade1TrendData,
+                                borderColor: "#10B981",
+                                backgroundColor: "transparent",
+                                borderWidth: 2,
+                                tension: 0.35,
+                                pointRadius: 0,
+                                pointHoverRadius: 4
+                            },
+
+                            {
+                                label: "Grade 2",
+                                data: grade2TrendData,
+                                borderColor: "#3B82F6",
+                                backgroundColor: "transparent",
+                                borderWidth: 2,
+                                tension: 0.35,
+                                pointRadius: 0,
+                                pointHoverRadius: 4
+                            },
+
+                            {
+                                label: "Grade 3",
+                                data: grade3TrendData,
+                                borderColor: "#F59E0B",
+                                backgroundColor: "transparent",
+                                borderWidth: 2,
+                                tension: 0.35,
+                                pointRadius: 0,
+                                pointHoverRadius: 4
+                            },
+
+                            {
+                                label: "Grade 4 / Reject",
+                                data: grade4TrendData,
+                                borderColor: "#EF4444",
+                                backgroundColor: "transparent",
+                                borderWidth: 2,
+                                tension: 0.35,
+                                pointRadius: 0,
+                                pointHoverRadius: 4
+                            }
+
+                        ]
+                    },
+
+                    options: {
+
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: false,
+
+                        interaction: {
+                            intersect: false,
+                            mode: "index"
+                        },
+
+                        plugins: {
+
+                            legend: {
+                                display: true,
+                                position: "top",
+                                align: "end",
+
+                                labels: {
+                                    boxWidth: 8,
+                                    boxHeight: 8,
+                                    padding: 6,
+                                    font: {
+                                        size: 9
+                                    }
+                                }
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label: function(context) {
+
+                                        return context.dataset.label +
+                                            ": " +
+                                            Number(
+                                                context.parsed.y
+                                            ).toFixed(2) +
+                                            " KG";
+                                    }
+                                }
+                            }
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                },
+
+                                ticks: {
+
+                                    maxTicksLimit: 5,
+                                    autoSkip: true,
+                                    maxRotation: 0,
+                                    minRotation: 0,
+
+                                    font: {
+                                        size: 8
+                                    }
+                                }
+                            },
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    maxTicksLimit: 4,
+
+                                    font: {
+                                        size: 8
+                                    },
+
+                                    callback: function(value) {
+
+                                        return value + " KG";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+        }
+    }
+
+    function updateTrendChart(data) {
+
+        if (!productionTrendChart || !data) {
+            return;
+        }
+
+        const date =
+            new Date(data.recordedAt);
+
+        const time =
+            date.toLocaleTimeString(
+                [],
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                }
+            );
+
+        trendLabels.push(time);
+
+        productionTrendData.push(
+            Number(data.outputWeight) || 0
+        );
+
+        const maxPoints = 20;
+
+        if (trendLabels.length > maxPoints) {
+
+            trendLabels.splice(
+                0,
+                trendLabels.length - maxPoints
+            );
+        }
+
+        if (productionTrendData.length > maxPoints) {
+
+            productionTrendData.splice(
+                0,
+                productionTrendData.length - maxPoints
+            );
+        }
+
+        productionTrendChart.update("none");
+    }
+
+    function updateGradeChart(data) {
+
+        if (!gradeChart || !data) {
+            return;
+        }
+
+        const values = [
+
+            Number(data.grade1Weight) || 0,
+
+            Number(data.grade2Weight) || 0,
+
+            Number(data.grade3Weight) || 0,
+
+            Number(data.grade4Weight) || 0
+
+        ];
+
+        const changed =
+            values.some(
+                function(value, index) {
+
+                    return value !==
+                        lastGradeValues[index];
+                }
+            );
+
+        if (!changed) {
+            return;
+        }
+
+        lastGradeValues =
+            [...values];
+
+        gradeChart.data.datasets[0].data =
+            values;
+
+        gradeChart.update("none");
+
+        const total =
+            values.reduce(
+                function(sum, value) {
+
+                    return sum + value;
+
+                },
+                0
+            );
+
+        const gradeTotal =
+            document.getElementById(
+                "gradeTotal"
+            );
+
+        if (gradeTotal) {
+
+            gradeTotal.innerText =
+                total.toFixed(2) +
+                " KG";
+        }
+
+        function percentage(value) {
+
+            if (total <= 0) {
+                return "0.0%";
+            }
+
+            return (
+                (value / total) *
+                100
+            ).toFixed(1) + "%";
+        }
+
+        const legendIds = [
+
+            "grade1Legend",
+            "grade2Legend",
+            "grade3Legend",
+            "grade4Legend"
+
+        ];
+
+        values.forEach(
+            function(value, index) {
+
+                const element =
+                    document.getElementById(
+                        legendIds[index]
+                    );
+
+                if (!element) {
+                    return;
+                }
+
+                element.innerText =
+                    value.toFixed(2) +
+                    " KG (" +
+                    percentage(value) +
+                    ")";
+            }
+        );
+    }
+
+    function updateGradeTrendChart(data) {
+
+        if (!gradeTrendChart || !data) {
+            return;
+        }
+
+        const date =
+            new Date(data.recordedAt);
+
+        const time =
+            date.toLocaleTimeString(
+                [],
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                }
+            );
+
+        const grade1 =
+            Number(data.grade1Weight) || 0;
+
+        const grade2 =
+            Number(data.grade2Weight) || 0;
+
+        const grade3 =
+            Number(data.grade3Weight) || 0;
+
+        const grade4 =
+            Number(data.grade4Weight) || 0;
+
+        gradeTrendLabels.push(time);
+
+        grade1TrendData.push(grade1);
+
+        grade2TrendData.push(grade2);
+
+        grade3TrendData.push(grade3);
+
+        grade4TrendData.push(grade4);
+
+        const maxPoints = 20;
+
+        if (gradeTrendLabels.length > maxPoints) {
+
+            gradeTrendLabels.splice(
+                0,
+                gradeTrendLabels.length - maxPoints
+            );
+        }
+
+        if (grade1TrendData.length > maxPoints) {
+
+            grade1TrendData.splice(
+                0,
+                grade1TrendData.length - maxPoints
+            );
+        }
+
+        if (grade2TrendData.length > maxPoints) {
+
+            grade2TrendData.splice(
+                0,
+                grade2TrendData.length - maxPoints
+            );
+        }
+
+        if (grade3TrendData.length > maxPoints) {
+
+            grade3TrendData.splice(
+                0,
+                grade3TrendData.length - maxPoints
+            );
+        }
+
+        if (grade4TrendData.length > maxPoints) {
+
+            grade4TrendData.splice(
+                0,
+                grade4TrendData.length - maxPoints
+            );
+        }
+
+        gradeTrendChart.update("none");
+    }
+
+    function updateMachineStatus(status) {
+
+        const element =
+            document.getElementById(
+                "machineStatus"
+            );
+
+        if (!element) {
+            return;
+        }
+
+        element.classList.remove(
+            "status-running",
+            "status-stopped",
+            "status-fault"
+        );
+
+        const currentStatus =
+            status || "--";
+
+        element.innerText =
+            currentStatus;
+
+        const normalizedStatus =
+            currentStatus.toLowerCase();
+
+        if (normalizedStatus === "running") {
+
+            element.classList.add(
+                "status-running"
+            );
+
+        } else if (
+            normalizedStatus === "fault"
+        ) {
+
+            element.classList.add(
+                "status-fault"
+            );
+
+        } else {
+
+            element.classList.add(
+                "status-stopped"
+            );
+        }
+    }
+
+    connection.on(
+        "MachineDataUpdated",
+        function(data) {
+
+            if (!data) {
+                return;
+            }
+
+            const machineCode =
+                document.getElementById(
+                    "machineCode"
+                );
+
+            if (machineCode) {
+
+                machineCode.innerText =
+                    data.machineCode ||
+                    "Machine";
+            }
+
+            const machineSpeed =
+                document.getElementById(
+                    "machineSpeed"
+                );
+
+            if (machineSpeed) {
+
+                machineSpeed.innerText =
+                    Number(
+                        data.machineSpeed
+                    ).toFixed(0);
+            }
+
+            const inputWeight =
+                document.getElementById(
+                    "inputWeight"
+                );
+
+            if (inputWeight) {
+
+                inputWeight.innerText =
+                    Number(
+                        data.inputWeight
+                    ).toFixed(2);
+            }
+
+            const outputWeight =
+                document.getElementById(
+                    "outputWeight"
+                );
+
+            if (outputWeight) {
+
+                outputWeight.innerText =
+                    Number(
+                        data.outputWeight
+                    ).toFixed(2);
+            }
+
+            const totalProduction =
+                document.getElementById(
+                    "totalProduction"
+                );
+
+            if (totalProduction) {
+
+                totalProduction.innerText =
+                    Number(
+                        data.totalProduction
+                    ).toFixed(2);
+            }
+
+            const lastUpdate =
+                document.getElementById(
+                    "lastUpdate"
+                );
+
+            if (lastUpdate) {
+
+                lastUpdate.innerText =
+                    new Date(
+                        data.recordedAt
+                    ).toLocaleTimeString();
+            }
+
+            const plcStatus =
+                document.getElementById(
+                    "plcStatus"
+                );
+
+            if (plcStatus) {
+
+                plcStatus.innerText =
+                    "Connected";
+            }
+
+            updateMachineStatus(
+                data.machineStatus
+            );
+
+            updateTrendChart(data);
+
+            updateGradeChart(data);
+
+            updateGradeTrendChart(data);
+        }
+    );
+
+    async function loadCurrentProduction() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/Dashboard/GetCurrentProduction"
+                );
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data =
+                await response.json();
+
+            const productionOrderContent =
+                document.getElementById(
+                    "productionOrderContent"
+                );
+
+            const noBatchMessage =
+                document.getElementById(
+                    "noBatchMessage"
+                );
+
+            const batchStatus =
+                document.getElementById(
+                    "batchStatus"
+                );
+
+            if (!data) {
+
+                if (productionOrderContent) {
+
+                    productionOrderContent.style.display =
+                        "none";
+                }
+
+                if (noBatchMessage) {
+
+                    noBatchMessage.style.display =
+                        "block";
+                }
+
+                if (batchStatus) {
+
+                    batchStatus.innerText =
+                        "No Active Batch";
+
+                    batchStatus.className =
+                        "badge bg-secondary";
+                }
+
+                return;
+            }
+
+            if (productionOrderContent) {
+
+                productionOrderContent.style.display =
+                    "block";
+            }
+
+            if (noBatchMessage) {
+
+                noBatchMessage.style.display =
+                    "none";
+            }
+
+            const orderNumber =
+                document.getElementById(
+                    "orderNumber"
+                );
+
+            if (orderNumber) {
+
+                orderNumber.innerText =
+                    data.orderNumber || "--";
+            }
+
+            const productName =
+                document.getElementById(
+                    "productName"
+                );
+
+            if (productName) {
+
+                productName.innerText =
+                    data.productName || "--";
+            }
+
+            const batchNumber =
+                document.getElementById(
+                    "batchNumber"
+                );
+
+            if (batchNumber) {
+
+                batchNumber.innerText =
+                    data.batchNumber || "--";
+            }
+
+            const targetQuantity =
+                document.getElementById(
+                    "targetQuantity"
+                );
+
+            if (targetQuantity) {
+
+                targetQuantity.innerText =
+                    Number(
+                        data.targetQuantity
+                    ).toFixed(2);
+            }
+
+            const batchProduced =
+                document.getElementById(
+                    "batchProduced"
+                );
+
+            if (batchProduced) {
+
+                batchProduced.innerText =
+                    Number(
+                        data.producedQuantity
+                    ).toFixed(2);
+            }
+
+            const batchGood =
+                document.getElementById(
+                    "batchGood"
+                );
+
+            if (batchGood) {
+
+                batchGood.innerText =
+                    Number(
+                        data.goodQuantity
+                    ).toFixed(2);
+            }
+
+            const batchReject =
+                document.getElementById(
+                    "batchReject"
+                );
+
+            if (batchReject) {
+
+                batchReject.innerText =
+                    Number(
+                        data.rejectQuantity
+                    ).toFixed(2);
+            }
+
+            if (batchStatus) {
+
+                const currentBatchStatus =
+                    data.batchStatus ||
+                    "Unknown";
+
+                batchStatus.innerText =
+                    currentBatchStatus;
+
+                batchStatus.className =
+                    currentBatchStatus.toLowerCase() ===
+                        "running"
+                        ? "badge bg-success"
+                        : "badge bg-secondary";
+            }
+
+            const progress =
+                Math.min(
+                    Math.max(
+                        Number(
+                            data.progress
+                        ) || 0,
+                        0
+                    ),
+                    100
+                );
+
+            const productionPercentage =
+                document.getElementById(
+                    "productionPercentage"
+                );
+
+            if (productionPercentage) {
+
+                productionPercentage.innerText =
+                    progress.toFixed(2) +
+                    "%";
+            }
+
+            const progressBar =
+                document.getElementById(
+                    "productionProgress"
+                );
+
+            if (progressBar) {
+
+                progressBar.style.width =
+                    progress + "%";
+
+                progressBar.innerText =
+                    progress.toFixed(2) +
+                    "%";
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to load current production:",
+                error
+            );
+        }
+    }
+
+    connection.onreconnected(
+        function() {
+
+            loadCurrentProduction();
+        }
+    );
+
+    async function startConnection() {
+
+        try {
+
+            await connection.start();
+
+        } catch (error) {
+
+            console.error(
+                "SignalR connection failed:",
+                error
+            );
+
+            setTimeout(
+                startConnection,
+                5000
+            );
+        }
+    }
+
+    createCharts();
+
+    loadCurrentProduction();
+
+    setInterval(
+        loadCurrentProduction,
+        1000
+    );
+
+    startConnection();
+
+</script>
+

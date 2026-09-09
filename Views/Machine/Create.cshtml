@@ -1,0 +1,57 @@
+﻿```cshtml
+@model RadialGraderMES.Models.Machine
+
+@{
+    ViewData["Title"] = "Add Machine";
+}
+
+<div class="container mt-4">
+
+    <h2>Add Machine</h2>
+
+    <form asp-controller="Machine"
+          asp-action="Create"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label asp-for="MachineCode" class="form-label">
+                Machine Code
+            </label>
+
+            <input asp-for="MachineCode"
+                   class="form-control"
+                   placeholder="Example: RG-001" />
+
+            <span asp-validation-for="MachineCode"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MachineName" class="form-label">
+                Machine Name
+            </label>
+
+            <input asp-for="MachineName"
+                   class="form-control"
+                   placeholder="Radial Grader" />
+
+            <span asp-validation-for="MachineName"
+                  class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Save Machine
+        </button>
+
+        <a asp-controller="Machine"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Back
+        </a>
+
+    </form>
+
+</div>
+```

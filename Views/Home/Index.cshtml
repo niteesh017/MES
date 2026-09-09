@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Radial Grader MES";
+}
+
+<div class="container mt-5">
+
+    <div class="text-center">
+        <h1 class="display-5 fw-bold">
+            Radial Grader MES
+        </h1>
+
+        <p class="lead">
+            Production Monitoring & Machine Management System
+        </p>
+    </div>
+
+    <div class="row mt-5 g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4>🏭 Machine</h4>
+                    <p class="text-muted">
+                        Manage Radial Grader machines and monitor their status.
+                    </p>
+
+                    <a asp-controller="Machine"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        Machine Master
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4>📋 Production Orders</h4>
+                    <p class="text-muted">
+                        Create and manage production orders.
+                    </p>
+
+                    <a asp-controller="ProductionOrder"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        Production Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4>📦 Production Batches</h4>
+                    <p class="text-muted">
+                        Track production batches and quantities.
+                    </p>
+
+                    <a asp-controller="ProductionBatch"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        Production Batches
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,84 @@
+﻿@model IEnumerable<RadialGraderMES.Models.ProductionBatch>
+
+@{
+    ViewData["Title"] = "Production Batches";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Production Batches</h2>
+
+    <table class="table table-bordered table-hover"> 
+        <thead>
+            <tr>
+               <th>Batch</th>
+               <th>Order</th>
+               <th>Product</th>
+               <th>start Time</th>
+               <th>End Time</th>
+               <th>Produced</th>
+               <th>Good Quantity</th>
+               <th>Raject Quantity</th>
+               <th>Status</th>
+               <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var batch in Model)
+            {
+                <tr>
+                    <td>
+                        @batch.BatchNumber
+                    </td>
+
+                    <td>
+                        @batch.ProductionOrder?.OrderNumber
+                    </td>
+
+                    <td>
+                        @batch.ProductionOrder?.ProductName
+                    </td>
+
+                    <td>
+                        @batch.StartTime.ToLocalTime()
+                    </td>
+
+                    <td>
+                        @(batch.EndTime?.ToLocalTime().ToString()?? "_")
+                    </td>
+
+                    <td>
+                        @batch.GoodQuantity KG
+                    </td>
+
+                    <td>
+                        @batch.RejectQuantity KG
+                    </td>
+
+                    <td>
+                        @batch.Status
+                    </td>
+
+                    <td>
+                        @if(batch.Status == "Running")
+                        {
+                            <form asp-action="Stop"
+                            method="post">
+
+                            <input type="hidden" 
+                                name="id"
+                                value="@batch.Id"/>
+
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Stop
+                                </button>
+                        </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>
