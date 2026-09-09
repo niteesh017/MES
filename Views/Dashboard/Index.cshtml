@@ -19,18 +19,6 @@
         overflow: hidden;
     }
 
-    .section-header {
-        min-height: 52px;
-        padding: 12px 18px;
-        border-bottom: 1px solid #e8ebef;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: #1f2937;
-        font-size: 14px;
-        font-weight: 700;
-    }
-
     .section-title-wrap {
         display: flex;
         align-items: center;
@@ -52,6 +40,12 @@
         padding: 18px;
     }
 
+    .section-title {
+        color: #1f2937;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
     .status-running {
         color: #198754;
     }
@@ -62,12 +56,6 @@
 
     .status-fault {
         color: #dc3545;
-    }
-
-    .section-title {
-        color: #1f2937;
-        font-size: 16px;
-        font-weight: 700;
     }
 
     .progress-bar {
@@ -217,17 +205,6 @@
         text-align: right;
     }
 
-    @@media (max-width: 768px) {
-
-        .container-fluid {
-            padding-left: 12px !important;
-            padding-right: 12px !important;
-        }
-
-        .chart-container {
-            height: 250px;
-        }
-    }
 
     @@media (max-width: 1200px) {
 
@@ -247,6 +224,20 @@
             max-width: 250px;
         }
     }
+
+
+    @@media (max-width: 768px) {
+
+        .container-fluid {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .chart-container {
+            height: 250px;
+        }
+    }
+
 
     @@media (max-width: 576px) {
 
@@ -281,9 +272,9 @@
 
 </style>
 
+
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light">
-
     <div class="container-fluid">
 
         <a class="navbar-brand"
@@ -345,11 +336,11 @@
         </div>
 
     </div>
-
 </nav>
 
+
 <!-- Machine KPI -->
-<div class="row g-3 mb-3">
+<div class="row g-3 mb-2">
 
     <!-- Machine Status -->
     <div class="col-sm-6 col-md-3">
@@ -401,6 +392,7 @@
 
     </div>
 
+
     <!-- Machine Speed -->
     <div class="col-sm-6 col-md-3">
 
@@ -449,6 +441,7 @@
 
     </div>
 
+
     <!-- Current Batch Production -->
     <div class="col-sm-6 col-md-3">
 
@@ -496,6 +489,7 @@
         </div>
 
     </div>
+
 
     <!-- Total Production -->
     <div class="col-sm-6 col-md-3">
@@ -547,8 +541,9 @@
 
 </div>
 
+
 <!-- Current Production + System Status -->
-<div class="row g-3 mb-3">
+<div class="row g-3 mb-2">
 
     <!-- Current Production -->
     <div class="col-xl-9">
@@ -581,7 +576,7 @@
 
                 </div>
 
-                <!-- No Batch -->
+
                 <div id="noBatchMessage"
                      class="no-batch"
                      style="display:none;">
@@ -591,7 +586,7 @@
 
                 </div>
 
-                <!-- Production Content -->
+
                 <div id="productionOrderContent">
 
                     <div class="row g-2">
@@ -602,7 +597,7 @@
                                  style="border-color:#adb5bd !important;">
 
                                 <div class="text-muted fw-semibold"
-                                     style="font-size:0.7rem;">
+                                     style="font-size:0.8rem;">
                                     Production Order
                                 </div>
 
@@ -616,13 +611,14 @@
 
                         </div>
 
+
                         <div class="col-xl-3 col-md-6">
 
                             <div class="border-start border-2 ps-2"
                                  style="border-color:#adb5bd !important;">
 
                                 <div class="text-muted fw-semibold"
-                                     style="font-size:0.7rem;">
+                                     style="font-size:0.8rem;">
                                     Product
                                 </div>
 
@@ -636,13 +632,14 @@
 
                         </div>
 
+
                         <div class="col-xl-3 col-md-6">
 
                             <div class="border-start border-2 ps-2"
                                  style="border-color:#adb5bd !important;">
 
                                 <div class="text-muted fw-semibold"
-                                     style="font-size:0.7rem;">
+                                     style="font-size:0.8rem;">
                                     Active Batch
                                 </div>
 
@@ -656,6 +653,7 @@
 
                         </div>
 
+
                         <div class="col-xl-3 col-md-6">
 
                             <div class="border-start border-2 ps-2"
@@ -664,7 +662,7 @@
                                 <div class="d-flex justify-content-between align-items-center">
 
                                     <div class="text-muted fw-semibold"
-                                         style="font-size:0.7rem;">
+                                         style="font-size:0.8rem;">
                                         Target Quantity
                                     </div>
 
@@ -687,13 +685,13 @@
 
                     </div>
 
-                    <!-- Production Progress -->
+
                     <div class="mt-2">
 
                         <div class="d-flex justify-content-between align-items-center mb-1">
 
                             <span class="text-muted fw-semibold"
-                                  style="font-size:0.7rem;">
+                                  style="font-size:0.8rem;">
                                 Production Progress
                             </span>
 
@@ -706,7 +704,7 @@
                         </div>
 
                         <div class="progress"
-                             style="height:12px;
+                             style="height:16px;
                             background:#dee2e6;
                             border-radius:5px;
                             overflow:hidden;">
@@ -733,6 +731,7 @@
 
     </div>
 
+
     <!-- System Status -->
     <div class="col-xl-3">
 
@@ -742,7 +741,7 @@
             <div class="section-body"
                  style="padding:14px 16px;">
 
-                <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
 
                     <div class="d-flex align-items-center gap-2">
 
@@ -763,7 +762,7 @@
 
                 </div>
 
-                <!-- PLC -->
+
                 <div class="d-flex align-items-center justify-content-between
                     border rounded px-3 py-2 mb-2"
                      style="background:rgba(128,128,128,0.08);">
@@ -788,9 +787,9 @@
 
                 </div>
 
-                <!-- Last Update -->
+
                 <div class="d-flex align-items-center justify-content-between
-                    border rounded px-3 py-2"
+                    border rounded px-3 py-2 mb-2"
                      style="background:rgba(128,128,128,0.08);">
 
                     <div class="d-flex align-items-center gap-2">
@@ -821,393 +820,9 @@
 
 </div>
 
-@* <!-- Production KPI -->
-<div class="row g-3 mb-3">
-
-    <!-- Input Weight -->
-    <div class="col-sm-6 col-md-3">
-
-        <div class="card border rounded h-100"
-             style="background:rgba(128,128,128,0.1);">
-
-            <div class="card-body py-2">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div class="rounded-circle bg-secondary bg-opacity-25
-                            d-flex justify-content-center align-items-center flex-shrink-0"
-                             style="width:70px;height:70px;">
-
-                            <i class="bi bi-box-arrow-in-down fs-2 text-secondary"></i>
-
-                        </div>
-
-                        <div>
-
-                            <div id="inputWeight"
-                                 class="fs-4 fw-bold text-dark">
-                                0
-                            </div>
-
-                            <div class="fw-bold text-muted"
-                                 style="font-size:1.05rem;line-height:1.15;">
-                                Input Weight
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="position-relative"
-                         style="height:70px;min-width:120px;">
-
-                        <span class="position-absolute top-0 end-0
-                            fw-bold text-secondary"
-                              style="font-size:0.75rem;">
-                            KG
-                        </span>
-
-                        <span class="position-absolute bottom-0 end-0
-                            text-muted text-end"
-                              style="font-size:0.68rem;
-                            line-height:1;
-                            white-space:nowrap;">
-                            Current PLC input
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Output Weight -->
-    <div class="col-sm-6 col-md-3">
-
-        <div class="card border rounded h-100"
-             style="background:rgba(128,128,128,0.1);">
-
-            <div class="card-body py-2">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div class="rounded-circle bg-primary bg-opacity-25
-                            d-flex justify-content-center align-items-center flex-shrink-0"
-                             style="width:70px;height:70px;">
-
-                            <i class="bi bi-box-arrow-up fs-2 text-primary"></i>
-
-                        </div>
-
-                        <div>
-
-                            <div id="outputWeight"
-                                 class="fs-4 fw-bold text-dark">
-                                0
-                            </div>
-
-                            <div class="fw-bold text-muted"
-                                 style="font-size:1.05rem;line-height:1.15;">
-                                Output Weight
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="position-relative"
-                         style="height:70px;min-width:120px;">
-
-                        <span class="position-absolute top-0 end-0
-                            fw-bold text-primary"
-                              style="font-size:0.75rem;">
-                            KG
-                        </span>
-
-                        <span class="position-absolute bottom-0 end-0
-                            text-muted text-end"
-                              style="font-size:0.68rem;
-                            line-height:1;
-                            white-space:nowrap;">
-                            Current machine output
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Good Production -->
-    <div class="col-sm-6 col-md-3">
-
-        <div class="card border rounded h-100"
-             style="background:rgba(128,128,128,0.1);">
-
-            <div class="card-body py-2">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div class="rounded-circle bg-success bg-opacity-25
-                            d-flex justify-content-center align-items-center flex-shrink-0"
-                             style="width:70px;height:70px;">
-
-                            <i class="bi bi-check-circle-fill fs-2 text-success"></i>
-
-                        </div>
-
-                        <div>
-
-                            <div id="batchGood"
-                                 class="fs-4 fw-bold text-success">
-                                0
-                            </div>
-
-                            <div class="fw-bold text-muted"
-                                 style="font-size:1.05rem;line-height:1.15;">
-                                Good Production
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="position-relative"
-                         style="height:70px;min-width:170px;">
-
-                        <span class="position-absolute top-0 end-0
-                            fw-bold text-success"
-                              style="font-size:0.75rem;">
-                            KG
-                        </span>
-
-                        <span class="position-absolute bottom-0 end-0
-                            text-muted text-end"
-                              style="font-size:0.68rem;
-                            line-height:1;
-                            white-space:nowrap;">
-                            Grade 1 + Grade 2 + Grade 3
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Reject Production -->
-    <div class="col-sm-6 col-md-3">
-
-        <div class="card border rounded h-100"
-             style="background:rgba(128,128,128,0.1);">
-
-            <div class="card-body py-2">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div class="rounded-circle bg-danger bg-opacity-25
-                            d-flex justify-content-center align-items-center flex-shrink-0"
-                             style="width:70px;height:70px;">
-
-                            <i class="bi bi-x-circle-fill fs-2 text-danger"></i>
-
-                        </div>
-
-                        <div>
-
-                            <div id="batchReject"
-                                 class="fs-4 fw-bold text-danger">
-                                0
-                            </div>
-
-                            <div class="fw-bold text-muted"
-                                 style="font-size:1.05rem;line-height:1.15;">
-                                Reject Production
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="position-relative"
-                         style="height:70px;min-width:120px;">
-
-                        <span class="position-absolute top-0 end-0
-                            fw-bold text-danger"
-                              style="font-size:0.75rem;">
-                            KG
-                        </span>
-
-                        <span class="position-absolute bottom-0 end-0
-                            text-muted text-end"
-                              style="font-size:0.68rem;
-                            line-height:1;
-                            white-space:nowrap;">
-                            Grade 4 / Reject
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-        </div>
-
-    </div>
-    <!-- Grade-wise Output -->
-    <div class="col-xl-4">
-
-        <div class="section-card h-100" style="background:rgba(128,128,128,0.1);">
-
-            <div class="section-body">
-
-                <div class="section-title-wrap mb-3">
-
-                    <div class="section-icon">
-                        📊
-                    </div>
-
-                    <span>
-                        <strong>Grade-wise Output</strong>
-                    </span>
-
-                    <span class="badge-soft ms-auto">
-                        Real-Time
-                    </span>
-
-                </div>
-
-                <div class="grade-distribution">
-
-                    <div class="grade-chart-wrapper">
-
-                        <canvas id="gradeChart"></canvas>
-
-                        <div class="grade-chart-center">
-
-                            <span class="grade-total-label">
-                                Total Output
-                            </span>
-
-                            <span id="gradeTotal"
-                                  class="grade-total-value">
-                                0.00 KG
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div id="gradeLegend"
-                         class="grade-legend">
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-1"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 1
-                                </span>
-
-                                <span id="grade1Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-2"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 2
-                                </span>
-
-                                <span id="grade2Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-3"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 3
-                                </span>
-
-                                <span id="grade3Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-4"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 4 / Rejected
-                                </span>
-
-                                <span id="grade4Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-</div>
- *@
 
 <!-- Production KPI -->
-<div class="row g-3 mb-3">
+<div class="row g-3 mb-2">
 
     <!-- LEFT: Production KPIs -->
     <div class="col-xl-6">
@@ -1478,521 +1093,6 @@
     </div>
 
 
-@*     <!-- RIGHT: Grade-wise Output -->
-    <div class="col-xl-6">
-
-        <div class="section-card"
-             style="height:244px;
-            background:rgba(128,128,128,0.1);">
-
-            <div class="section-body"
-                 style="padding:12px 18px;">
-
-                <div class="section-title-wrap mb-2">
-
-                    <div class="section-icon">
-                        📊
-                    </div>
-
-                    <span>
-                        <strong>Grade-wise Output</strong>
-                    </span>
-
-                    <span class="badge-soft ms-auto">
-                        Production Feed
-                    </span>
-
-                </div>
-
-
-                <div class="grade-distribution"
-                     style="min-height:180px;
-                    height:180px;
-                    padding:0 10px;
-                    gap:20px;">
-
-                    <div class="grade-chart-wrapper"
-                         style="width:180px;
-                        height:180px;
-                        min-width:180px;
-                        min-height:180px;
-                        flex:0 0 180px;">
-
-                        <canvas id="gradeChart"></canvas>
-
-                        <div class="grade-chart-center">
-
-                            <span class="grade-total-label">
-                                Total Output
-                            </span>
-
-                            <span id="gradeTotal"
-                                  class="grade-total-value">
-                                0.00 KG
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div id="gradeLegend"
-                         class="grade-legend">
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-1"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 1
-                                </span>
-
-                                <span id="grade1Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-2"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 2
-                                </span>
-
-                                <span id="grade2Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-3"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 3
-                                </span>
-
-                                <span id="grade3Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-4"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 4 / Rejected
-                                </span>
-
-                                <span id="grade4Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
- *@
-@*  ```html
-<!-- RIGHT: Grade-wise Output -->
-<div class="col-xl-6">
-
-    <div class="section-card"
-         style="height:244px;
-                background:rgba(128,128,128,0.1);">
-
-        <div class="section-body"
-             style="padding:12px 18px;">
-
-            <div class="section-title-wrap mb-2">
-
-                <div class="section-icon">
-                    📊
-                </div>
-
-                <span>
-                    <strong>Grade-wise Output</strong>
-                </span>
-
-                <span class="badge-soft ms-auto">
-                    Production Feed
-                </span>
-
-            </div>
-
-            <div class="grade-distribution"
-                 style="min-height:180px;
-                        height:180px;
-                        padding:0 10px;
-                        gap:20px;">
-
-                <!-- CHART -->
-                <div class="grade-chart-wrapper"
-                     style="width:180px;
-                            height:180px;
-                            min-width:180px;
-                            min-height:180px;
-                            flex:0 0 180px;">
-
-                    <canvas id="gradeChart"></canvas>
-
-                    <div class="grade-chart-center">
-
-                        <span class="grade-total-label">
-                            Total Output
-                        </span>
-
-                        <span id="gradeTotal"
-                              class="grade-total-value">
-                            0.00 KG
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- GRADE LEGEND -->
-                <div id="gradeLegend"
-                     class="grade-legend">
-
-                    <div class="grade-legend-item">
-
-                        <span class="grade-dot grade-1"></span>
-
-                        <div class="grade-info">
-
-                            <span class="grade-title">
-                                Grade 1
-                            </span>
-
-                            <span id="grade1Legend">
-                                0.00 KG (0.0%)
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="grade-legend-item">
-
-                        <span class="grade-dot grade-2"></span>
-
-                        <div class="grade-info">
-
-                            <span class="grade-title">
-                                Grade 2
-                            </span>
-
-                            <span id="grade2Legend">
-                                0.00 KG (0.0%)
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="grade-legend-item">
-
-                        <span class="grade-dot grade-3"></span>
-
-                        <div class="grade-info">
-
-                            <span class="grade-title">
-                                Grade 3
-                            </span>
-
-                            <span id="grade3Legend">
-                                0.00 KG (0.0%)
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="grade-legend-item">
-
-                        <span class="grade-dot grade-4"></span>
-
-                        <div class="grade-info">
-
-                            <span class="grade-title">
-                                Grade 4 / Rejected
-                            </span>
-
-                            <span id="grade4Legend">
-                                0.00 KG (0.0%)
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- PRODUCTION SUMMARY -->
-                <div class="production-summary">
-
-                    <div class="production-summary-header">
-                        <span>📈</span>
-                        <strong>Production Summary</strong>
-                    </div>
-
-                    <div class="production-summary-grid">
-
-                        <div class="production-summary-item">
-                            <span>Total Input</span>
-                            <strong id="totalInput">
-                                0.00 KG
-                            </strong>
-                        </div>
-
-                        <div class="production-summary-item">
-                            <span>Accepted</span>
-                            <strong id="acceptedOutput">
-                                0.00 KG
-                            </strong>
-                        </div>
-
-                        <div class="production-summary-item">
-                            <span>Rejected</span>
-                            <strong id="rejectedOutput">
-                                0.00 KG
-                            </strong>
-                        </div>
-
-                        <div class="production-summary-item">
-                            <span>Yield</span>
-                            <strong id="yieldPercentage">
-                                0.0%
-                            </strong>
-                        </div>
-
-                        <div class="production-summary-item">
-                            <span>Production Rate</span>
-                            <strong id="productionRate">
-                                --
-                            </strong>
-                        </div>
-
-                        <div class="production-summary-item">
-                            <span>Efficiency</span>
-                            <strong id="efficiency">
-                                --
-                            </strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
- *@
-
-
-   @*  <!-- RIGHT: Grade-wise Output -->
-    <div class="col-xl-6">
-
-        <div class="section-card"
-             style="height:244px;
-            background:rgba(128,128,128,0.1);">
-
-            <div class="section-body"
-                 style="padding:12px 18px;">
-
-                <div class="section-title-wrap mb-2">
-
-                    <div class="section-icon">
-                        📊
-                    </div>
-
-                    <span>
-                        <strong>Grade-wise Output</strong>
-                    </span>
-
-                    <span class="badge-soft ms-auto">
-                        Production Feed
-                    </span>
-
-                </div>
-
-                <div class="grade-distribution"
-                     style="min-height:180px;
-                    height:180px;
-                    padding:0 10px;
-                    gap:20px;">
-
-                    <div class="grade-chart-wrapper"
-                         style="width:180px;
-                        height:180px;
-                        min-width:180px;
-                        min-height:180px;
-                        flex:0 0 180px;">
-
-                        <canvas id="gradeChart"></canvas>
-
-                        <div class="grade-chart-center">
-
-                            <span class="grade-total-label">
-                                Total Output
-                            </span>
-
-                            <span id="gradeTotal"
-                                  class="grade-total-value">
-                                0.00 KG
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div id="gradeLegend"
-                         class="grade-legend">
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-1"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 1
-                                </span>
-
-                                <span id="grade1Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-2"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 2
-                                </span>
-
-                                <span id="grade2Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-3"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 3
-                                </span>
-
-                                <span id="grade3Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="grade-legend-item">
-
-                            <span class="grade-dot grade-4"></span>
-
-                            <div class="grade-info">
-
-                                <span class="grade-title">
-                                    Grade 4 / Rejected
-                                </span>
-
-                                <span id="grade4Legend">
-                                    0.00 KG (0.0%)
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="grade-trend-section"
-                         style="flex:1;
-                        min-width:0;
-                        height:180px;">
-
-                    
-
-                        <div style="height:150px;
-                            width:100%;
-                            position:relative;">
-
-                            <canvas id="gradeTrendChart"></canvas>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
- *@
-
     <!-- RIGHT: Grade-wise Output -->
     <div class="col-xl-6">
 
@@ -2049,6 +1149,7 @@
 
                     </div>
 
+
                     <div id="gradeLegend"
                          class="grade-legend">
 
@@ -2070,6 +1171,7 @@
 
                         </div>
 
+
                         <div class="grade-legend-item">
 
                             <span class="grade-dot grade-2"></span>
@@ -2088,6 +1190,7 @@
 
                         </div>
 
+
                         <div class="grade-legend-item">
 
                             <span class="grade-dot grade-3"></span>
@@ -2105,6 +1208,7 @@
                             </div>
 
                         </div>
+
 
                         <div class="grade-legend-item">
 
@@ -2125,6 +1229,7 @@
                         </div>
 
                     </div>
+
 
                     <div class="grade-trend-section"
                          style="flex:1;
@@ -2150,19 +1255,20 @@
 
     </div>
 
+</div>
 
 
 <!-- Production Output Trend -->
-<div class="row g-3 mb-3">
+<div class="row g-3 mb-2">
 
-    <div class="col-xl-8">
+    <div class="col-xl-12">
 
         <div class="section-card h-100"
              style="background:rgba(128,128,128,0.1);">
 
             <div class="section-body">
 
-                <div class="section-title-wrap mb-3">
+                <div class="section-title-wrap mb-2">
 
                     <div class="section-icon">
                         📈
@@ -2188,15 +1294,11 @@
 
     </div>
 
-</div> 
-
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
+
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -2241,6 +1343,8 @@
                         datasets: [{
                             label: "Output",
                             data: productionTrendData,
+                            borderColor: "#f26f24",
+                            backgroundColor: "rgba(43,59,73,0.5)",
                             borderWidth: 2,
                             tension: 0.35,
                             fill: true,
@@ -2292,7 +1396,7 @@
                                 },
 
                                 ticks: {
-                                    maxTicksLimit: 6,
+                                    maxTicksLimit: 10,
                                     autoSkip: true,
                                     maxRotation: 0,
                                     minRotation: 0
