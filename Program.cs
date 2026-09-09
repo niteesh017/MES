@@ -6,11 +6,11 @@ using RadialGraderMES.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<MESDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("MESConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("MESConnection")));
 
 builder.Services.AddHttpClient<IPlcService, PlcService>(client =>
 {
@@ -24,17 +24,14 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -43,6 +40,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Index}/{id?}")
     .WithStaticAssets();
+
 app.MapHub<MesHub>("/mesHub");
 
 app.Run();

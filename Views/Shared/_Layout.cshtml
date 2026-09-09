@@ -1,14 +1,14 @@
 ﻿<!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RadialGraderMES</title>
+    <title>@ViewData["Title"] - MESDemo</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/RadialGraderMES.styles.css" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/bootstrap-icons/bootstrap-icons-1.11.3/font/bootstrap-icons.css" />
 </head>
 
 <body>
@@ -19,9 +19,8 @@
 
     <footer class="border-top py-3">
         <div class="container-fluid d-flex justify-content-between">
-
             <span class="text-muted">
-                © 2026 RadialGrader MES
+                © 2026 MESDemo
             </span>
 
             <a class="text-muted text-decoration-none"
@@ -30,14 +29,12 @@
                 Privacy
             </a>
         </div>
-
-
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="~/lib/signalr.min.js"></script>
+    <script src="~/lib/chart.umd.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
