@@ -13,4 +13,14 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Update="appsettings.json"
+				 CopyToOutputDirectory="Never"
+				 CopyToPublishDirectory="Never" />
+
+		<Content Update="appsettings.Development.json"
+				 CopyToOutputDirectory="Never"
+				 CopyToPublishDirectory="Never" />
+	</ItemGroup>
+
 </Project>
