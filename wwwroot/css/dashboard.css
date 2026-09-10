@@ -1,10 +1,9 @@
-﻿
-body {
+﻿body {
     background: #f5f6f8;
 }
 
 .section-card {
-    background: #ffffff;
+    background: #fff;
     border: 1px solid #e3e7ec;
     border-radius: 11px;
     box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
@@ -20,11 +19,11 @@ body {
 .section-icon {
     width: 31px;
     height: 31px;
-    border-radius: 7px;
-    background: #f1f3f5;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #f1f3f5;
+    border-radius: 7px;
     font-size: 14px;
 }
 
@@ -80,26 +79,25 @@ body {
     text-align: center;
 }
 
+/* === GRADE DISTRIBUTION === */
+
 .grade-distribution {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     gap: 45px;
-    min-height: 260px;
     width: 100%;
+    min-height: 260px;
     padding: 10px 15px;
 }
 
 .grade-chart-wrapper {
     position: relative;
-    width: 300px;
-    height: 300px;
-    min-width: 300px;
-    min-height: 300px;
-    flex: 0 0 300px;
     display: flex;
+    flex: 0 0 300px;
     align-items: center;
     justify-content: center;
+    width: 300px;
+    height: 300px;
 }
 
     .grade-chart-wrapper canvas {
@@ -117,16 +115,16 @@ body {
 }
 
 .grade-total-label {
+    color: #64748b;
     font-size: 13px;
     font-weight: 500;
-    color: #64748b;
 }
 
 .grade-total-value {
     margin-top: 4px;
+    color: #334155;
     font-size: 18px;
     font-weight: 700;
-    color: #334155;
 }
 
 .grade-legend {
@@ -146,16 +144,14 @@ body {
 }
 
     .grade-legend-item:last-child {
-        border-bottom: none;
+        border-bottom: 0;
     }
 
 .grade-dot {
     width: 11px;
     height: 11px;
-    min-width: 11px;
-    min-height: 11px;
-    border-radius: 50%;
     flex-shrink: 0;
+    border-radius: 50%;
 }
 
 .grade-1 {
@@ -183,33 +179,31 @@ body {
 }
 
 .grade-title {
+    color: #334155;
     font-size: 13px;
     font-weight: 600;
-    color: #334155;
     white-space: nowrap;
 }
 
 .grade-info > span:last-child {
+    color: #475569;
     font-size: 12px;
     font-weight: 500;
-    color: #475569;
-    white-space: nowrap;
     text-align: right;
+    white-space: nowrap;
 }
 
+/* === RESPONSIVE === */
 
-@@media (max-width: 1200px) {
-
+@media (max-width: 1200px) {
     .grade-distribution {
         gap: 50px;
     }
 
     .grade-chart-wrapper {
+        flex-basis: 200px;
         width: 200px;
         height: 200px;
-        min-width: 200px;
-        min-height: 200px;
-        flex-basis: 200px;
     }
 
     .grade-legend {
@@ -217,12 +211,10 @@ body {
     }
 }
 
-
-@@media (max-width: 768px) {
-
+@media (max-width: 768px) {
     .container-fluid {
-        padding-left: 12px !important;
         padding-right: 12px !important;
+        padding-left: 12px !important;
     }
 
     .chart-container {
@@ -230,9 +222,7 @@ body {
     }
 }
 
-
-@@media (max-width: 576px) {
-
+@media (max-width: 576px) {
     .grade-distribution {
         flex-direction: column;
         align-items: center;
@@ -242,17 +232,14 @@ body {
     }
 
     .grade-chart-wrapper {
+        flex-basis: 170px;
         width: 170px;
         height: 170px;
-        min-width: 170px;
-        min-height: 170px;
     }
 
         .grade-chart-wrapper canvas {
             width: 170px !important;
             height: 170px !important;
-            max-width: 170px !important;
-            max-height: 170px !important;
         }
 
     .grade-legend {
@@ -261,4 +248,3 @@ body {
         margin-left: 0;
     }
 }
-

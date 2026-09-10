@@ -3,16 +3,39 @@
     public class MachineData
     {
         public long Id { get; set; }
+
         public int MachineId { get; set; }
+
         public Machine? Machine { get; set; }
+
         public string MachineStatus { get; set; } = "Stopped";
-        public decimal MachineSpeed{ get; set; }
+
+        public decimal MachineSpeed { get; set; }
+
         public decimal InputWeight { get; set; }
+
         public decimal OutputWeight { get; set; }
+
         public decimal Grade1Weight { get; set; }
+
         public decimal Grade2Weight { get; set; }
+
         public decimal Grade3Weight { get; set; }
+
         public decimal Grade4Weight { get; set; }
+
+        public decimal Quality { get; set; }
+
+        public decimal OEE { get; set; }
+
+        public decimal ProcessTemperature { get; set; }
+
+        public string MachineHealth { get; set; } = "Healthy";
+
+        public int DowntimeSeconds { get; set; }
+
+        public decimal ProductionRate { get; set; }
+
         public DateTime RecordedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -13,7 +13,6 @@ namespace MESDemo.Services
         private readonly IPlcService _plcService;
         private readonly ILogger<PlcPollingService> _logger;
         private readonly IHubContext<MesHub> _hubContext;
-        
 
         public PlcPollingService(
             IServiceScopeFactory scopeFactory,
@@ -36,7 +35,9 @@ namespace MESDemo.Services
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
-                {    
+                {
+                    // === READ PLC DATA ===
+
                     var plcData = await _plcService
                         .ReadDataAsync(stoppingToken);
 
@@ -52,22 +53,42 @@ namespace MESDemo.Services
                         continue;
                     }
 
+                    // === LOG PLC DATA ===
+
                     _logger.LogInformation(
-                        "PLC DATA RECEIVED: Machine={Machine}, Status={Status}, Output={Output}, G1={G1}, G2={G2}, G3={G3}, G4={G4}",
+                        "PLC DATA RECEIVED: " +
+                        "Machine={Machine}, " +
+                        "Status={Status}, " +
+                        "Speed={Speed}, " +
+                        "Input={Input}, " +
+                        "Output={Output}, " +
+                        "OEE={OEE}, " +
+                        "Quality={Quality}, " +
+                        "Temperature={Temperature}, " +
+                        "Health={Health}, " +
+                        "Downtime={Downtime}, " +
+                        "ProductionRate={ProductionRate}",
                         plcData.MachineCode,
                         plcData.MachineStatus,
+                        plcData.MachineSpeed,
+                        plcData.InputWeight,
                         plcData.OutputWeight,
-                        plcData.Grade1Weight,
-                        plcData.Grade2Weight,
-                        plcData.Grade3Weight,
-                        plcData.Grade4Weight);
+                        plcData.OEE,
+                        plcData.Quality,
+                        plcData.ProcessTemperature,
+                        plcData.MachineHealth,
+                        plcData.DowntimeSeconds,
+                        plcData.ProductionRate);
 
+                    // === CREATE DATABASE SCOPE ===
 
                     using var scope =
                         _scopeFactory.CreateScope();
 
                     var db = scope.ServiceProvider
-                        .GetRequiredService<MESDbContext>();      
+                        .GetRequiredService<MESDbContext>();
+
+                    // === FIND MACHINE ===
 
                     var machine = await db.Machines
                         .FirstOrDefaultAsync(
@@ -88,12 +109,17 @@ namespace MESDemo.Services
                         continue;
                     }
 
+                    // === UPDATE MACHINE STATUS ===
+
                     machine.Status =
                         plcData.MachineStatus;
 
+                    // === CREATE MACHINE TELEMETRY ===
+
                     var machineData = new MachineData
                     {
-                        MachineId = machine.Id,
+                        MachineId =
+                            machine.Id,
 
                         MachineStatus =
                             plcData.MachineStatus,
@@ -119,11 +145,31 @@ namespace MESDemo.Services
                         Grade4Weight =
                             plcData.Grade4Weight,
 
+                        Quality =
+                            plcData.Quality,
+
+                        OEE =
+                            plcData.OEE,
+
+                        ProcessTemperature =
+                            plcData.ProcessTemperature,
+
+                        MachineHealth =
+                            plcData.MachineHealth,
+
+                        DowntimeSeconds =
+                            plcData.DowntimeSeconds,
+
+                        ProductionRate =
+                            plcData.ProductionRate,
+
                         RecordedAt =
                             plcData.RecordedAt
                     };
 
                     db.MachineData.Add(machineData);
+
+                    // === FIND RUNNING BATCH ===
 
                     var runningBatch =
                         await db.ProductionBatch
@@ -136,21 +182,26 @@ namespace MESDemo.Services
                                         machine.Id,
                                 stoppingToken);
 
-
                     if (runningBatch == null)
                     {
                         _logger.LogWarning(
-                            "NO RUNNING BATCH FOUND for MachineId={MachineId}, MachineCode={MachineCode}",
+                            "NO RUNNING BATCH FOUND for " +
+                            "MachineId={MachineId}, " +
+                            "MachineCode={MachineCode}",
                             machine.Id,
                             machine.MachineCode);
                     }
                     else
                     {
                         _logger.LogInformation(
-                            "RUNNING BATCH FOUND: Batch={BatchNumber}, OrderId={OrderId}",
+                            "RUNNING BATCH FOUND: " +
+                            "Batch={BatchNumber}, " +
+                            "OrderId={OrderId}",
                             runningBatch.BatchNumber,
                             runningBatch.ProductionOrderId);
                     }
+
+                    // === UPDATE PRODUCTION BATCH ===
 
                     if (runningBatch != null &&
                         plcData.MachineStatus.Equals(
@@ -168,7 +219,6 @@ namespace MESDemo.Services
                         decimal producedQuantity =
                             plcData.OutputWeight;
 
-
                         runningBatch.ProducedQuantity +=
                             producedQuantity;
 
@@ -178,17 +228,23 @@ namespace MESDemo.Services
                         runningBatch.RejectQuantity +=
                             rejectQuantity;
 
-
                         _logger.LogInformation(
-                            "BATCH UPDATED: {BatchNumber} | Produced={Produced} KG | Good={Good} KG | Reject={Reject} KG",
+                            "BATCH UPDATED: {BatchNumber} | " +
+                            "Produced={Produced} KG | " +
+                            "Good={Good} KG | " +
+                            "Reject={Reject} KG",
                             runningBatch.BatchNumber,
                             runningBatch.ProducedQuantity,
                             runningBatch.GoodQuantity,
                             runningBatch.RejectQuantity);
                     }
 
+                    // === SAVE DATA ===
+
                     await db.SaveChangesAsync(
                         stoppingToken);
+
+                    // === SEND REAL-TIME DATA ===
 
                     await _hubContext.Clients.All
                         .SendAsync(
@@ -196,10 +252,13 @@ namespace MESDemo.Services
                             plcData,
                             stoppingToken);
 
+                    // === LOG SUCCESS ===
 
                     _logger.LogInformation(
                         "PLC cycle completed successfully for {MachineCode}",
                         plcData.MachineCode);
+
+                    // === POLL PLC EVERY 1 SECOND ===
 
                     await Task.Delay(
                         TimeSpan.FromSeconds(1),
@@ -221,6 +280,8 @@ namespace MESDemo.Services
                         stoppingToken);
                 }
             }
+
+            // === SERVICE STOPPED ===
 
             _logger.LogInformation(
                 "PLC Polling Service Stopped");

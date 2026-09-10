@@ -12,6 +12,17 @@
         public decimal Grade3Weight { get; set; }
         public decimal Grade4Weight { get; set; }
         public decimal TotalProduction { get; set; }
+        public decimal Quality { get; set; }
+
+        public decimal OEE { get; set; }
+
+        public decimal ProcessTemperature { get; set; }
+
+        public string MachineHealth { get; set; } = "Healthy";
+
+        public int DowntimeSeconds { get; set; }
+
+        public decimal ProductionRate { get; set; }
         public DateTime RecordedAt { get; set; }
     }
 }

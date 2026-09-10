@@ -65,6 +65,9 @@ namespace MESDemo.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<int>("DowntimeSeconds")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("Grade1Weight")
                         .HasColumnType("numeric");
 
@@ -81,6 +84,10 @@ namespace MESDemo.Migrations
                         .HasPrecision(12, 3)
                         .HasColumnType("numeric(12,3)");
 
+                    b.Property<string>("MachineHealth")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("MachineId")
                         .HasColumnType("integer");
 
@@ -92,9 +99,21 @@ namespace MESDemo.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal>("OEE")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("OutputWeight")
                         .HasPrecision(12, 3)
                         .HasColumnType("numeric(12,3)");
+
+                    b.Property<decimal>("ProcessTemperature")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ProductionRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Quality")
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("RecordedAt")
                         .HasColumnType("timestamp with time zone");
@@ -114,9 +133,6 @@ namespace MESDemo.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("BadQuantity")
-                        .HasColumnType("numeric");
-
                     b.Property<string>("BatchNumber")
                         .IsRequired()
                         .HasColumnType("text");
@@ -132,6 +148,10 @@ namespace MESDemo.Migrations
 
                     b.Property<int>("ProductionOrderId")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("RejectQuantity")
+                        .HasColumnType("numeric")
+                        .HasColumnName("BadQuantity");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");

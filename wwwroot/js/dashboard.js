@@ -1,992 +1,375 @@
-﻿const connection =
-        new signalR.HubConnectionBuilder()
-            .withUrl("/mesHub")
-            .withAutomaticReconnect()
-            .build();
+﻿const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/mesHub")
+    .withAutomaticReconnect()
+    .build();
 
-    const trendLabels = [];
-    const productionTrendData = [];
+const trendLabels = [], productionTrendData = [];
+const gradeTrendLabels = [], grade1TrendData = [], grade2TrendData = [], grade3TrendData = [], grade4TrendData = [];
 
-    const gradeTrendLabels = [];
-    const grade1TrendData = [];
-    const grade2TrendData = [];
-    const grade3TrendData = [];
-    const grade4TrendData = [];
+let productionTrendChart, gradeChart, gradeTrendChart;
+let lastGradeValues = [null, null, null, null];
 
-    let productionTrendChart;
-    let gradeChart;
-    let gradeTrendChart;
+const el = id => document.getElementById(id);
+const num = (v, d = 2) => Number(v ?? 0).toFixed(d);
 
-    let lastGradeValues = [null, null, null, null];
+function createCharts() {
+    const trend = el("productionTrendChart");
 
-    function createCharts() {
-
-        const trendContext =
-            document.getElementById("productionTrendChart");
-
-        if (trendContext) {
-
-            productionTrendChart =
-                new Chart(trendContext, {
-
-                    type: "line",
-
-                    data: {
-                        labels: trendLabels,
-
-                        datasets: [{
-                            label: "Output",
-                            data: productionTrendData,
-                            borderColor: "#f26f24",
-                            backgroundColor: "rgba(43,59,73,0.5)",
-                            borderWidth: 2,
-                            tension: 0.35,
-                            fill: true,
-                            pointRadius: 0,
-                            pointHoverRadius: 5
-                        }]
-                    },
-
-                    options: {
-
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: false,
-
-                        interaction: {
-                            intersect: false,
-                            mode: "index"
-                        },
-
-                        plugins: {
-
-                            legend: {
-                                display: true,
-                                position: "top",
-                                align: "end"
-                            },
-
-                            tooltip: {
-                                callbacks: {
-
-                                    label: function(context) {
-
-                                        return "Output: " +
-                                            Number(
-                                                context.parsed.y
-                                            ).toFixed(2) +
-                                            " KG";
-                                    }
-                                }
-                            }
-                        },
-
-                        scales: {
-
-                            x: {
-
-                                grid: {
-                                    display: false
-                                },
-
-                                ticks: {
-                                    maxTicksLimit: 10,
-                                    autoSkip: true,
-                                    maxRotation: 0,
-                                    minRotation: 0
-                                }
-                            },
-
-                            y: {
-
-                                beginAtZero: true,
-
-                                ticks: {
-
-                                    callback: function(value) {
-
-                                        return value + " KG";
-                                    }
-                                }
-                            }
+    if (trend) {
+        productionTrendChart = new Chart(trend, {
+            type: "line",
+            data: {
+                labels: trendLabels,
+                datasets: [{
+                    label: "Output",
+                    data: productionTrendData,
+                    borderColor: "#f26f24",
+                    backgroundColor: "rgba(43,59,73,0.5)",
+                    borderWidth: 2,
+                    tension: .35,
+                    fill: true,
+                    pointRadius: 0,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                interaction: { intersect: false, mode: "index" },
+                plugins: {
+                    legend: { display: true, position: "top", align: "end" },
+                    tooltip: {
+                        callbacks: {
+                            label: c => `Output: ${num(c.parsed.y)} KG`
                         }
                     }
-                });
-        }
-
-        const gradeContext =
-            document.getElementById("gradeChart");
-
-        if (gradeContext) {
-
-            gradeChart =
-                new Chart(gradeContext, {
-
-                    type: "doughnut",
-
-                    data: {
-
-                        labels: [
-                            "Grade 1",
-                            "Grade 2",
-                            "Grade 3",
-                            "Grade 4 / Reject"
-                        ],
-
-                        datasets: [{
-
-                            data: [
-                                0,
-                                0,
-                                0,
-                                0
-                            ],
-
-                            backgroundColor: [
-                                "#10B981",
-                                "#3B82F6",
-                                "#F59E0B",
-                                "#EF4444"
-                            ],
-
-                            borderColor: "#FFFFFF",
-                            borderWidth: 3,
-                            hoverOffset: 0
-                        }]
-                    },
-
-                    options: {
-
-                        responsive: true,
-                        maintainAspectRatio: false,
-
-                        cutout: "50%",
-
-                        animation: false,
-
-                        resizeDelay: 100,
-
-                        plugins: {
-
-                            legend: {
-                                display: false
-                            },
-
-                            tooltip: {
-
-                                callbacks: {
-
-                                    label: function(context) {
-
-                                        return context.label +
-                                            ": " +
-                                            Number(
-                                                context.raw
-                                            ).toFixed(2) +
-                                            " KG";
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-        }
-
-        const gradeTrendContext =
-            document.getElementById("gradeTrendChart");
-
-        if (gradeTrendContext) {
-
-            gradeTrendChart =
-                new Chart(gradeTrendContext, {
-
-                    type: "line",
-
-                    data: {
-
-                        labels: gradeTrendLabels,
-
-                        datasets: [
-
-                            {
-                                label: "Grade 1",
-                                data: grade1TrendData,
-                                borderColor: "#10B981",
-                                backgroundColor: "transparent",
-                                borderWidth: 2,
-                                tension: 0.35,
-                                pointRadius: 0,
-                                pointHoverRadius: 4
-                            },
-
-                            {
-                                label: "Grade 2",
-                                data: grade2TrendData,
-                                borderColor: "#3B82F6",
-                                backgroundColor: "transparent",
-                                borderWidth: 2,
-                                tension: 0.35,
-                                pointRadius: 0,
-                                pointHoverRadius: 4
-                            },
-
-                            {
-                                label: "Grade 3",
-                                data: grade3TrendData,
-                                borderColor: "#F59E0B",
-                                backgroundColor: "transparent",
-                                borderWidth: 2,
-                                tension: 0.35,
-                                pointRadius: 0,
-                                pointHoverRadius: 4
-                            },
-
-                            {
-                                label: "Grade 4 / Reject",
-                                data: grade4TrendData,
-                                borderColor: "#EF4444",
-                                backgroundColor: "transparent",
-                                borderWidth: 2,
-                                tension: 0.35,
-                                pointRadius: 0,
-                                pointHoverRadius: 4
-                            }
-
-                        ]
-                    },
-
-                    options: {
-
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: false,
-
-                        interaction: {
-                            intersect: false,
-                            mode: "index"
-                        },
-
-                        plugins: {
-
-                            legend: {
-                                display: true,
-                                position: "top",
-                                align: "end",
-
-                                labels: {
-                                    boxWidth: 8,
-                                    boxHeight: 8,
-                                    padding: 6,
-                                    font: {
-                                        size: 9
-                                    }
-                                }
-                            },
-
-                            tooltip: {
-
-                                callbacks: {
-
-                                    label: function(context) {
-
-                                        return context.dataset.label +
-                                            ": " +
-                                            Number(
-                                                context.parsed.y
-                                            ).toFixed(2) +
-                                            " KG";
-                                    }
-                                }
-                            }
-                        },
-
-                        scales: {
-
-                            x: {
-
-                                grid: {
-                                    display: false
-                                },
-
-                                ticks: {
-
-                                    maxTicksLimit: 5,
-                                    autoSkip: true,
-                                    maxRotation: 0,
-                                    minRotation: 0,
-
-                                    font: {
-                                        size: 8
-                                    }
-                                }
-                            },
-
-                            y: {
-
-                                beginAtZero: true,
-
-                                ticks: {
-
-                                    maxTicksLimit: 4,
-
-                                    font: {
-                                        size: 8
-                                    },
-
-                                    callback: function(value) {
-
-                                        return value + " KG";
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-        }
-    }
-
-    function updateTrendChart(data) {
-
-        if (!productionTrendChart || !data) {
-            return;
-        }
-
-        const date =
-            new Date(data.recordedAt);
-
-        const time =
-            date.toLocaleTimeString(
-                [],
-                {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit"
-                }
-            );
-
-        trendLabels.push(time);
-
-        productionTrendData.push(
-            Number(data.outputWeight) || 0
-        );
-
-        const maxPoints = 20;
-
-        if (trendLabels.length > maxPoints) {
-
-            trendLabels.splice(
-                0,
-                trendLabels.length - maxPoints
-            );
-        }
-
-        if (productionTrendData.length > maxPoints) {
-
-            productionTrendData.splice(
-                0,
-                productionTrendData.length - maxPoints
-            );
-        }
-
-        productionTrendChart.update("none");
-    }
-
-    function updateGradeChart(data) {
-
-        if (!gradeChart || !data) {
-            return;
-        }
-
-        const values = [
-
-            Number(data.grade1Weight) || 0,
-
-            Number(data.grade2Weight) || 0,
-
-            Number(data.grade3Weight) || 0,
-
-            Number(data.grade4Weight) || 0
-
-        ];
-
-        const changed =
-            values.some(
-                function(value, index) {
-
-                    return value !==
-                        lastGradeValues[index];
-                }
-            );
-
-        if (!changed) {
-            return;
-        }
-
-        lastGradeValues =
-            [...values];
-
-        gradeChart.data.datasets[0].data =
-            values;
-
-        gradeChart.update("none");
-
-        const total =
-            values.reduce(
-                function(sum, value) {
-
-                    return sum + value;
-
                 },
-                0
-            );
-
-        const gradeTotal =
-            document.getElementById(
-                "gradeTotal"
-            );
-
-        if (gradeTotal) {
-
-            gradeTotal.innerText =
-                total.toFixed(2) +
-                " KG";
-        }
-
-        function percentage(value) {
-
-            if (total <= 0) {
-                return "0.0%";
-            }
-
-            return (
-                (value / total) *
-                100
-            ).toFixed(1) + "%";
-        }
-
-        const legendIds = [
-
-            "grade1Legend",
-            "grade2Legend",
-            "grade3Legend",
-            "grade4Legend"
-
-        ];
-
-        values.forEach(
-            function(value, index) {
-
-                const element =
-                    document.getElementById(
-                        legendIds[index]
-                    );
-
-                if (!element) {
-                    return;
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 10, autoSkip: true, maxRotation: 0 }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { callback: v => `${v} KG` }
+                    }
                 }
-
-                element.innerText =
-                    value.toFixed(2) +
-                    " KG (" +
-                    percentage(value) +
-                    ")";
             }
+        });
+    }
+
+    const grade = el("gradeChart");
+
+    if (grade) {
+        gradeChart = new Chart(grade, {
+            type: "doughnut",
+            data: {
+                labels: ["Grade 1", "Grade 2", "Grade 3", "Grade 4 / Reject"],
+                datasets: [{
+                    data: [0, 0, 0, 0],
+                    backgroundColor: ["#10B981", "#3B82F6", "#F59E0B", "#EF4444"],
+                    borderColor: "#FFFFFF",
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "50%",
+                animation: false,
+                resizeDelay: 100,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: c => `${c.label}: ${num(c.raw)} KG`
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const gradeTrend = el("gradeTrendChart");
+
+    if (gradeTrend) {
+        const colors = ["#10B981", "#3B82F6", "#F59E0B", "#EF4444"];
+        const labels = ["Grade 1", "Grade 2", "Grade 3", "Grade 4 / Reject"];
+        const datasets = [grade1TrendData, grade2TrendData, grade3TrendData, grade4TrendData].map((data, i) => ({
+            label: labels[i],
+            data,
+            borderColor: colors[i],
+            backgroundColor: "transparent",
+            borderWidth: 2,
+            tension: .35,
+            pointRadius: 0,
+            pointHoverRadius: 4
+        }));
+
+        gradeTrendChart = new Chart(gradeTrend, {
+            type: "line",
+            data: { labels: gradeTrendLabels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                interaction: { intersect: false, mode: "index" },
+                plugins: {
+                    legend: {
+                        position: "top",
+                        align: "end",
+                        labels: { boxWidth: 8, boxHeight: 8, padding: 6, font: { size: 9 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: c => `${c.dataset.label}: ${num(c.parsed.y)} KG`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 5, autoSkip: true, maxRotation: 0, font: { size: 8 } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { maxTicksLimit: 4, font: { size: 8 }, callback: v => `${v} KG` }
+                    }
+                }
+            }
+        });
+    }
+}
+
+function time(value) {
+    return new Date(value).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+}
+
+function limit(arr, max = 20) {
+    if (arr.length > max) arr.splice(0, arr.length - max);
+}
+
+function updateTrendChart(data) {
+    if (!productionTrendChart || !data) return;
+
+    trendLabels.push(time(data.recordedAt));
+    productionTrendData.push(Number(data.outputWeight) || 0);
+
+    limit(trendLabels);
+    limit(productionTrendData);
+
+    productionTrendChart.update("none");
+}
+
+function updateGradeChart(data) {
+    if (!gradeChart || !data) return;
+
+    const values = [
+        Number(data.grade1Weight) || 0,
+        Number(data.grade2Weight) || 0,
+        Number(data.grade3Weight) || 0,
+        Number(data.grade4Weight) || 0
+    ];
+
+    if (!values.some((v, i) => v !== lastGradeValues[i])) return;
+
+    lastGradeValues = [...values];
+    gradeChart.data.datasets[0].data = values;
+    gradeChart.update("none");
+
+    const total = values.reduce((a, b) => a + b, 0);
+    const totalEl = el("gradeTotal");
+
+    if (totalEl) totalEl.innerText = `${num(total)} KG`;
+
+    ["grade1Legend", "grade2Legend", "grade3Legend", "grade4Legend"]
+        .forEach((id, i) => {
+            const e = el(id);
+            if (e) {
+                const percentage = total > 0 ? ((values[i] / total) * 100).toFixed(1) : "0.0";
+                e.innerText = `${num(values[i])} KG (${percentage}%)`;
+            }
+        });
+}
+
+function updateGradeTrendChart(data) {
+    if (!gradeTrendChart || !data) return;
+
+    gradeTrendLabels.push(time(data.recordedAt));
+
+    [grade1TrendData, grade2TrendData, grade3TrendData, grade4TrendData]
+        .forEach((arr, i) => {
+            arr.push(Number(data[`grade${i + 1}Weight`]) || 0);
+            limit(arr);
+        });
+
+    limit(gradeTrendLabels);
+    gradeTrendChart.update("none");
+}
+
+function updateMachineStatus(status) {
+    const e = el("machineStatus");
+    if (!e) return;
+
+    e.classList.remove("status-running", "status-stopped", "status-fault");
+
+    const value = status || "--";
+    e.innerText = value;
+
+    const s = value.toLowerCase();
+    e.classList.add(
+        s === "running" ? "status-running" :
+            s === "fault" ? "status-fault" : "status-stopped"
+    );
+}
+
+function updateMachineKpis(data) {
+    if (!data) return;
+
+    if (el("oeeValue"))
+        el("oeeValue").innerText = `${num(data.oee)}%`;
+
+    if (el("temperatureValue"))
+        el("temperatureValue").innerText = `${num(data.processTemperature, 1)} °C`;
+
+    const health = el("healthValue");
+
+    if (health) {
+        const value = data.machineHealth || "Unknown";
+        health.innerText = value;
+
+        health.classList.remove("text-success", "text-warning", "text-danger");
+
+        health.classList.add(
+            value.toLowerCase() === "healthy" ? "text-success" :
+                value.toLowerCase() === "warning" ? "text-warning" : "text-danger"
         );
     }
 
-    function updateGradeTrendChart(data) {
+    if (el("downtimeValue")) {
+        const total = Math.max(0, Math.floor(Number(data.downtimeSeconds) || 0));
+        const h = Math.floor(total / 3600);
+        const m = Math.floor((total % 3600) / 60);
+        const s = total % 60;
 
-        if (!gradeTrendChart || !data) {
+        el("downtimeValue").innerText =
+            `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+
+    if (el("productionRateValue"))
+        el("productionRateValue").innerText = `${num(data.productionRate)}`;
+}
+
+function updateMachineData(data) {
+    if (!data) return;
+
+    if (el("machineCode"))
+        el("machineCode").innerText = data.machineCode || "Machine";
+
+    if (el("machineSpeed"))
+        el("machineSpeed").innerText = num(data.machineSpeed, 0);
+
+    if (el("inputWeight"))
+        el("inputWeight").innerText = num(data.inputWeight);
+
+    if (el("outputWeight"))
+        el("outputWeight").innerText = num(data.outputWeight);
+
+    if (el("totalProduction"))
+        el("totalProduction").innerText = num(data.totalProduction);
+
+    if (el("lastUpdate"))
+        el("lastUpdate").innerText = new Date(data.recordedAt).toLocaleTimeString();
+
+    if (el("plcStatus")) {
+        el("plcStatus").innerText = "Connected";
+        el("plcStatus").className = "badge bg-success";
+    }
+
+    updateMachineStatus(data.machineStatus);
+    updateMachineKpis(data);
+    updateTrendChart(data);
+    updateGradeChart(data);
+    updateGradeTrendChart(data);
+}
+
+connection.on("MachineDataUpdated", updateMachineData);
+
+async function loadCurrentProduction() {
+    try {
+        const response = await fetch("/Dashboard/GetCurrentProduction");
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        const content = el("productionOrderContent");
+        const noBatch = el("noBatchMessage");
+        const status = el("batchStatus");
+
+        if (!data) {
+            if (content) content.style.display = "none";
+            if (noBatch) noBatch.style.display = "block";
+            if (status) {
+                status.innerText = "No Active Batch";
+                status.className = "badge bg-secondary";
+            }
             return;
         }
 
-        const date =
-            new Date(data.recordedAt);
+        if (content) content.style.display = "block";
+        if (noBatch) noBatch.style.display = "none";
 
-        const time =
-            date.toLocaleTimeString(
-                [],
-                {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit"
-                }
-            );
+        [
+            ["orderNumber", data.orderNumber],
+            ["productName", data.productName],
+            ["batchNumber", data.batchNumber],
+            ["targetQuantity", num(data.targetQuantity)],
+            ["batchProduced", num(data.producedQuantity)],
+            ["batchGood", num(data.goodQuantity)],
+            ["batchReject", num(data.rejectQuantity)]
+        ].forEach(([id, value]) => {
+            if (el(id)) el(id).innerText = value || "--";
+        });
 
-        const grade1 =
-            Number(data.grade1Weight) || 0;
-
-        const grade2 =
-            Number(data.grade2Weight) || 0;
-
-        const grade3 =
-            Number(data.grade3Weight) || 0;
-
-        const grade4 =
-            Number(data.grade4Weight) || 0;
-
-        gradeTrendLabels.push(time);
-
-        grade1TrendData.push(grade1);
-
-        grade2TrendData.push(grade2);
-
-        grade3TrendData.push(grade3);
-
-        grade4TrendData.push(grade4);
-
-        const maxPoints = 20;
-
-        if (gradeTrendLabels.length > maxPoints) {
-
-            gradeTrendLabels.splice(
-                0,
-                gradeTrendLabels.length - maxPoints
-            );
+        if (status) {
+            const value = data.batchStatus || "Unknown";
+            status.innerText = value;
+            status.className =
+                value.toLowerCase() === "running"
+                    ? "badge bg-success"
+                    : "badge bg-secondary";
         }
 
-        if (grade1TrendData.length > maxPoints) {
+        const progress = Math.min(Math.max(Number(data.progress) || 0, 0), 100);
 
-            grade1TrendData.splice(
-                0,
-                grade1TrendData.length - maxPoints
-            );
+        if (el("productionPercentage"))
+            el("productionPercentage").innerText = `${progress.toFixed(2)}%`;
+
+        if (el("productionProgress")) {
+            el("productionProgress").style.width = `${progress}%`;
+            el("productionProgress").innerText = `${progress.toFixed(2)}%`;
         }
-
-        if (grade2TrendData.length > maxPoints) {
-
-            grade2TrendData.splice(
-                0,
-                grade2TrendData.length - maxPoints
-            );
-        }
-
-        if (grade3TrendData.length > maxPoints) {
-
-            grade3TrendData.splice(
-                0,
-                grade3TrendData.length - maxPoints
-            );
-        }
-
-        if (grade4TrendData.length > maxPoints) {
-
-            grade4TrendData.splice(
-                0,
-                grade4TrendData.length - maxPoints
-            );
-        }
-
-        gradeTrendChart.update("none");
+    } catch (error) {
+        console.error("Failed to load current production:", error);
     }
+}
 
-    function updateMachineStatus(status) {
+connection.onreconnected(loadCurrentProduction);
 
-        const element =
-            document.getElementById(
-                "machineStatus"
-            );
-
-        if (!element) {
-            return;
-        }
-
-        element.classList.remove(
-            "status-running",
-            "status-stopped",
-            "status-fault"
-        );
-
-        const currentStatus =
-            status || "--";
-
-        element.innerText =
-            currentStatus;
-
-        const normalizedStatus =
-            currentStatus.toLowerCase();
-
-        if (normalizedStatus === "running") {
-
-            element.classList.add(
-                "status-running"
-            );
-
-        } else if (
-            normalizedStatus === "fault"
-        ) {
-
-            element.classList.add(
-                "status-fault"
-            );
-
-        } else {
-
-            element.classList.add(
-                "status-stopped"
-            );
-        }
+async function startConnection() {
+    try {
+        await connection.start();
+    } catch {
+        setTimeout(startConnection, 5000);
     }
-
-    connection.on(
-        "MachineDataUpdated",
-        function(data) {
-
-            if (!data) {
-                return;
-            }
-
-            const machineCode =
-                document.getElementById(
-                    "machineCode"
-                );
-
-            if (machineCode) {
-
-                machineCode.innerText =
-                    data.machineCode ||
-                    "Machine";
-            }
-
-            const machineSpeed =
-                document.getElementById(
-                    "machineSpeed"
-                );
-
-            if (machineSpeed) {
-
-                machineSpeed.innerText =
-                    Number(
-                        data.machineSpeed
-                    ).toFixed(0);
-            }
-
-            const inputWeight =
-                document.getElementById(
-                    "inputWeight"
-                );
-
-            if (inputWeight) {
-
-                inputWeight.innerText =
-                    Number(
-                        data.inputWeight
-                    ).toFixed(2);
-            }
-
-            const outputWeight =
-                document.getElementById(
-                    "outputWeight"
-                );
-
-            if (outputWeight) {
-
-                outputWeight.innerText =
-                    Number(
-                        data.outputWeight
-                    ).toFixed(2);
-            }
-
-            const totalProduction =
-                document.getElementById(
-                    "totalProduction"
-                );
-
-            if (totalProduction) {
-
-                totalProduction.innerText =
-                    Number(
-                        data.totalProduction
-                    ).toFixed(2);
-            }
-
-            const lastUpdate =
-                document.getElementById(
-                    "lastUpdate"
-                );
-
-            if (lastUpdate) {
-
-                lastUpdate.innerText =
-                    new Date(
-                        data.recordedAt
-                    ).toLocaleTimeString();
-            }
-
-            const plcStatus =
-                document.getElementById(
-                    "plcStatus"
-                );
-
-            if (plcStatus) {
-
-                plcStatus.innerText =
-                    "Connected";
-            }
-
-            updateMachineStatus(
-                data.machineStatus
-            );
-
-            updateTrendChart(data);
-
-            updateGradeChart(data);
-
-            updateGradeTrendChart(data);
-        }
-    );
-
-    async function loadCurrentProduction() {
-
-        try {
-
-            const response =
-                await fetch(
-                    "/Dashboard/GetCurrentProduction"
-                );
-
-            if (!response.ok) {
-                return;
-            }
-
-            const data =
-                await response.json();
-
-            const productionOrderContent =
-                document.getElementById(
-                    "productionOrderContent"
-                );
-
-            const noBatchMessage =
-                document.getElementById(
-                    "noBatchMessage"
-                );
-
-            const batchStatus =
-                document.getElementById(
-                    "batchStatus"
-                );
-
-            if (!data) {
-
-                if (productionOrderContent) {
-
-                    productionOrderContent.style.display =
-                        "none";
-                }
-
-                if (noBatchMessage) {
-
-                    noBatchMessage.style.display =
-                        "block";
-                }
-
-                if (batchStatus) {
-
-                    batchStatus.innerText =
-                        "No Active Batch";
-
-                    batchStatus.className =
-                        "badge bg-secondary";
-                }
-
-                return;
-            }
-
-            if (productionOrderContent) {
-
-                productionOrderContent.style.display =
-                    "block";
-            }
-
-            if (noBatchMessage) {
-
-                noBatchMessage.style.display =
-                    "none";
-            }
-
-            const orderNumber =
-                document.getElementById(
-                    "orderNumber"
-                );
-
-            if (orderNumber) {
-
-                orderNumber.innerText =
-                    data.orderNumber || "--";
-            }
-
-            const productName =
-                document.getElementById(
-                    "productName"
-                );
-
-            if (productName) {
-
-                productName.innerText =
-                    data.productName || "--";
-            }
-
-            const batchNumber =
-                document.getElementById(
-                    "batchNumber"
-                );
-
-            if (batchNumber) {
-
-                batchNumber.innerText =
-                    data.batchNumber || "--";
-            }
-
-            const targetQuantity =
-                document.getElementById(
-                    "targetQuantity"
-                );
-
-            if (targetQuantity) {
-
-                targetQuantity.innerText =
-                    Number(
-                        data.targetQuantity
-                    ).toFixed(2);
-            }
-
-            const batchProduced =
-                document.getElementById(
-                    "batchProduced"
-                );
-
-            if (batchProduced) {
-
-                batchProduced.innerText =
-                    Number(
-                        data.producedQuantity
-                    ).toFixed(2);
-            }
-
-            const batchGood =
-                document.getElementById(
-                    "batchGood"
-                );
-
-            if (batchGood) {
-
-                batchGood.innerText =
-                    Number(
-                        data.goodQuantity
-                    ).toFixed(2);
-            }
-
-            const batchReject =
-                document.getElementById(
-                    "batchReject"
-                );
-
-            if (batchReject) {
-
-                batchReject.innerText =
-                    Number(
-                        data.rejectQuantity
-                    ).toFixed(2);
-            }
-
-            if (batchStatus) {
-
-                const currentBatchStatus =
-                    data.batchStatus ||
-                    "Unknown";
-
-                batchStatus.innerText =
-                    currentBatchStatus;
-
-                batchStatus.className =
-                    currentBatchStatus.toLowerCase() ===
-                        "running"
-                        ? "badge bg-success"
-                        : "badge bg-secondary";
-            }
-
-            const progress =
-                Math.min(
-                    Math.max(
-                        Number(
-                            data.progress
-                        ) || 0,
-                        0
-                    ),
-                    100
-                );
-
-            const productionPercentage =
-                document.getElementById(
-                    "productionPercentage"
-                );
-
-            if (productionPercentage) {
-
-                productionPercentage.innerText =
-                    progress.toFixed(2) +
-                    "%";
-            }
-
-            const progressBar =
-                document.getElementById(
-                    "productionProgress"
-                );
-
-            if (progressBar) {
-
-                progressBar.style.width =
-                    progress + "%";
-
-                progressBar.innerText =
-                    progress.toFixed(2) +
-                    "%";
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Failed to load current production:",
-                error
-            );
-        }
-    }
-
-    connection.onreconnected(
-        function() {
-
-            loadCurrentProduction();
-        }
-    );
-
-    async function startConnection() {
-
-        try {
-
-            await connection.start();
-
-        } catch (error) {
-
-            console.error(
-                "SignalR connection failed:",
-                error
-            );
-
-            setTimeout(
-                startConnection,
-                5000
-            );
-        }
-    }
-
-    createCharts();
-
-    loadCurrentProduction();
-
-    setInterval(
-        loadCurrentProduction,
-        1000
-    );
-
-    startConnection();
+}
+
+createCharts();
+loadCurrentProduction();
+setInterval(loadCurrentProduction, 1000);
+startConnection();
