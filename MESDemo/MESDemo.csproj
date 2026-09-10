@@ -24,8 +24,5 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\PLC Simulator\PLC Simulator.csproj" />
-  </ItemGroup>
 
 </Project>
