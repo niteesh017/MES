@@ -1,0 +1,16 @@
+**/bin/
+**/obj/
+**/.vs/
+.git/
+
+AI-Document-Chat/
+AprilFool/
+Birthday/
+C# Practice/
+FaceDetectionApplication/
+Font/
+HappyJourney/
+IntelliStock AI/
+Potato/
+ReactApp1/
+SpecialDay/
