@@ -1,0 +1,77 @@
+﻿@model IEnumerable<RadialGraderMES.Models.ProductionOrder>
+
+@{
+    ViewData["Title"] = "Production Orders";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Production Orders</h2>
+
+        <a asp-action="Create"
+        class="btn btn-primary">
+            +New Production Order
+        </a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Order Number</th>
+                <th>Product Name</th>
+                <th>Target</th>
+                <th>Machine</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderNumber</td>
+                    <td>@order.ProductName</td>
+                    <td>@order.TargetQuantity @order.Unit</td>
+                    <td>
+                        @order.Machine?.MachineName
+                    </td>
+                    <td>
+                        @order.Status
+                    </td>
+                    <td>
+
+                        @* @if (order.Status == "Pending") *@
+                        @if (true)
+                        {
+                            <form asp-controller="ProductionBatch"
+                                  asp-action="Start"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="orderId"
+                                       value="@order.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-success btn-sm">
+                                    Start Batch
+                                </button>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">
+                                @order.Status
+                            </span>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>

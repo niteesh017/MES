@@ -1,0 +1,6 @@
+@PLC_Simulator_HostAddress = http://localhost:5102
+
+GET {{PLC_Simulator_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../PLC Simulator/PLC Simulator.csproj" />
+  <Project Path="MESDemo.csproj" />
+</Solution>

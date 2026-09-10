@@ -1,0 +1,1120 @@
+﻿@{
+    ViewData["Title"] = "MES Dashboard";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           asp-controller="Dashboard"
+           asp-action="Index">
+            <strong>MES Dashboard</strong>
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mesNavbar"
+                aria-controls="mesNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mesNavbar">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Dashboard"
+                       asp-action="Index">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Machine"
+                       asp-action="Index">
+                        Machines
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="ProductionOrder"
+                       asp-action="Index">
+                        Production Orders
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="ProductionBatch"
+                       asp-action="Index">
+                        Batches
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+</nav>
+
+<!-- Machine KPI -->
+<div class="row g-3 mb-2">
+
+    <!-- Machine Status -->
+    <div class="col-sm-6 col-md-3">
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-success bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-cpu-fill fs-2 text-success"></i>
+
+                        </div>
+
+                        <div>
+                            <div id="machineStatus"
+                                 class="fs-4 fw-bold text-dark">
+                                --
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.1rem;">
+                                Machine Status
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <span id="machineCode"
+                          class="fw-bold text-success"
+                          style="font-size:0.75rem;">
+                        Machine
+                    </span>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Machine Speed -->
+    <div class="col-sm-6 col-md-3">
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-primary bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-speedometer2 fs-2 text-primary"></i>
+
+                        </div>
+
+                        <div>
+                            <div class="fs-4 fw-bold text-dark">
+                                <span id="machineSpeed">0</span>
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.1rem;">
+                                Machine Speed
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <span class="fw-bold text-primary"
+                          style="font-size:0.75rem;">
+                        RPM
+                    </span>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Batch Production -->
+    <div class="col-sm-6 col-md-3">
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-warning bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-box-seam-fill fs-2 text-warning"></i>
+
+                        </div>
+
+                        <div>
+                            <div class="fs-4 fw-bold text-dark">
+                                <span id="batchProduced">0</span>
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.1rem;">
+                                Current Batch Production
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <span class="fw-bold text-warning"
+                          style="font-size:0.75rem;">
+                        KG
+                    </span>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Production -->
+    <div class="col-sm-6 col-md-3">
+        <div class="card border rounded h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="card-body py-2">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="rounded-circle bg-danger bg-opacity-25
+                            d-flex justify-content-center align-items-center flex-shrink-0"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-bar-chart-fill fs-2 text-danger"></i>
+
+                        </div>
+
+                        <div>
+                            <div class="fs-4 fw-bold text-dark">
+                                <span id="totalProduction">0</span>
+                            </div>
+
+                            <div class="fw-bold text-muted"
+                                 style="font-size:1.1rem;">
+                                Cycle Output
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <span class="fw-bold text-danger"
+                          style="font-size:0.75rem;">
+                        KG
+                    </span>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Current Production + System Status -->
+<div class="row g-3 mb-2">
+
+    <!-- Current Production -->
+    <div class="col-xl-9">
+
+        <div class="section-card h-100"
+             style="background:rgba(128,128,128,0.08);">
+
+            <div class="section-body"
+                 style="padding:10px 14px;">
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-gear-wide-connected text-secondary"
+                           style="font-size:0.9rem;"></i>
+
+                        <strong class="section-title"
+                                style="font-size:0.95rem;">
+                            Current Production
+                        </strong>
+
+                    </div>
+
+                    <span id="batchStatus"
+                          class="badge bg-secondary"
+                          style="font-size:0.68rem;padding:5px 8px;">
+                        No Batch
+                    </span>
+
+                </div>
+
+                <div id="noBatchMessage"
+                     class="no-batch"
+                     style="display:none;">
+
+                    <i class="bi bi-info-circle me-1"></i>
+                    No running production batch.
+
+                </div>
+
+                <div id="productionOrderContent">
+
+                    <div class="row g-2">
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="border-start border-2 ps-2"
+                                 style="border-color:#adb5bd !important;">
+
+                                <div class="text-muted fw-semibold"
+                                     style="font-size:0.8rem;">
+                                    Production Order
+                                </div>
+
+                                <div id="orderNumber"
+                                     class="fw-bold text-dark"
+                                     style="font-size:0.95rem;">
+                                    --
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="border-start border-2 ps-2"
+                                 style="border-color:#adb5bd !important;">
+
+                                <div class="text-muted fw-semibold"
+                                     style="font-size:0.8rem;">
+                                    Product
+                                </div>
+
+                                <div id="productName"
+                                     class="fw-bold text-dark"
+                                     style="font-size:0.95rem;">
+                                    --
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="border-start border-2 ps-2"
+                                 style="border-color:#adb5bd !important;">
+
+                                <div class="text-muted fw-semibold"
+                                     style="font-size:0.8rem;">
+                                    Active Batch
+                                </div>
+
+                                <div id="batchNumber"
+                                     class="fw-bold text-dark"
+                                     style="font-size:0.95rem;">
+                                    --
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="border-start border-2 ps-2"
+                                 style="border-color:#adb5bd !important;">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div class="text-muted fw-semibold"
+                                         style="font-size:0.8rem;">
+                                        Target Quantity
+                                    </div>
+
+                                    <span class="text-secondary fw-bold"
+                                          style="font-size:0.65rem;">
+                                        KG
+                                    </span>
+
+                                </div>
+
+                                <div id="targetQuantity"
+                                     class="fw-bold text-dark"
+                                     style="font-size:0.95rem;">
+                                    0
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-2">
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+
+                            <span class="text-muted fw-semibold"
+                                  style="font-size:0.8rem;">
+                                Production Progress
+                            </span>
+
+                            <strong id="productionPercentage"
+                                    class="text-success"
+                                    style="font-size:0.75rem;">
+                                0%
+                            </strong>
+
+                        </div>
+
+                        <div class="progress"
+                             style="height:16px;
+                            background:#dee2e6;
+                            border-radius:5px;
+                            overflow:hidden;">
+
+                            <div id="productionProgress"
+                                 class="progress-bar"
+                                 role="progressbar"
+                                 style="width:0%;
+                                height:100%;
+                                border-radius:5px;
+                                background:linear-gradient(90deg,#20c997,#198754);
+                                transition:width 0.5s ease;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- System Status -->
+    <div class="col-xl-3">
+
+        <div class="section-card h-100"
+             style="background:rgba(128,128,128,0.08);">
+
+            <div class="section-body"
+                 style="padding:14px 16px;">
+
+                <div class="d-flex align-items-center justify-content-between mb-2">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-activity text-dark"
+                           style="font-size:1rem;"></i>
+
+                        <span class="fw-bold text-dark"
+                              style="font-size:0.9rem;">
+                            System Status
+                        </span>
+
+                    </div>
+
+                    <span class="badge bg-dark-subtle text-white"
+                          style="font-size:0.68rem;padding:5px 8px;">
+                        NX1P2
+                    </span>
+
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between
+                    border rounded px-3 py-2 mb-2"
+                     style="background:rgba(128,128,128,0.08);">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-cpu text-dark"
+                           style="font-size:0.9rem;"></i>
+
+                        <span class="fw-semibold text-black"
+                              style="font-size:0.75rem;">
+                            PLC
+                        </span>
+
+                    </div>
+
+                    <span id="plcStatus"
+                          class="badge bg-success"
+                          style="font-size:0.68rem;padding:5px 8px;">
+                        Connected
+                    </span>
+
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between
+                    border rounded px-3 py-2 mb-2"
+                     style="background:rgba(128,128,128,0.08);">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-clock-history text-dark"
+                           style="font-size:0.9rem;"></i>
+
+                        <span class="fw-semibold text-black"
+                              style="font-size:0.75rem;">
+                            Last Update
+                        </span>
+
+                    </div>
+
+                    <span id="lastUpdate"
+                          class="fw-bold text-dark"
+                          style="font-size:0.72rem;">
+                        --
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Production KPI -->
+<div class="row g-3 mb-2">
+
+    <!-- LEFT: Production + Machine KPIs -->
+    <div class="col-xl-6">
+
+        <div style="height:244px;">
+
+            <!-- ROW 1 -->
+            <div class="row g-2" style="height:76px;">
+
+                <!-- Input Weight -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-secondary bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-box-arrow-in-down text-secondary"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div id="inputWeight"
+                                             class="fw-bold text-dark"
+                                             style="font-size:1rem;">
+                                            0
+                                        </div>
+
+                                        <span class="text-secondary fw-bold"
+                                              style="font-size:0.65rem;">
+                                            KG
+                                        </span>
+
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        Input Weight
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Weight -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-primary bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-box-arrow-up text-primary"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div id="outputWeight"
+                                             class="fw-bold text-dark"
+                                             style="font-size:1rem;">
+                                            0
+                                        </div>
+
+                                        <span class="text-secondary fw-bold"
+                                              style="font-size:0.65rem;">
+                                            KG
+                                        </span>
+
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        Output Weight
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Good Production -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-success bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-check-circle-fill text-success"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div id="batchGood"
+                                             class="fw-bold text-success"
+                                             style="font-size:1rem;">
+                                            0
+                                        </div>
+
+                                        <span class="text-secondary fw-bold"
+                                              style="font-size:0.65rem;">
+                                            KG
+                                        </span>
+
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        Good Production
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ROW 2 -->
+            <div class="row g-2"
+                 style="height:76px;margin-top:8px;">
+
+                <!-- Reject Production -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-danger bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-box2-fill text-danger"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div id="batchReject"
+                                             class="fw-bold text-danger"
+                                             style="font-size:1rem;">
+                                            0
+                                        </div>
+
+                                        <span class="text-secondary fw-bold"
+                                              style="font-size:0.65rem;">
+                                            KG
+                                        </span>
+
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        Reject Production
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OEE -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-primary bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-speedometer2 text-primary"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div id="oeeValue"
+                                             class="fw-bold text-primary"
+                                             style="font-size:1rem;">
+                                            0.00%
+                                        </div>
+
+                                        <span class="text-secondary fw-bold"
+                                              style="font-size:0.65rem;">
+                                            %
+                                        </span>
+
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        OEE
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Temperature -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-warning bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-thermometer-half text-warning"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div id="temperatureValue"
+                                             class="fw-bold text-warning"
+                                             style="font-size:1rem;">
+                                            0.0
+                                        </div>
+
+                                        <span class="text-secondary fw-bold"
+                                              style="font-size:0.65rem;">
+                                            °C
+                                        </span>
+
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        Temperature
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ROW 3 -->
+            <div class="row g-2"
+                 style="height:76px;margin-top:8px;">
+
+                <!-- Machine Health -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-success bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-heart-pulse-fill text-success"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div id="healthValue"
+                                         class="fw-bold text-success text-nowrap"
+                                         style="font-size:1rem;">
+                                        Healthy
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        Machine Health
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Downtime -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-danger bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-clock-history text-danger"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div id="downtimeValue"
+                                             class="fw-bold text-danger"
+                                             style="font-size:1rem;">
+                                            00:00:00
+                                        </div>
+
+                                        <span class="text-secondary fw-bold"
+                                              style="font-size:0.65rem;">
+                                            HH:MM:SS
+                                        </span>
+
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        Downtime
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Production Rate -->
+                <div class="col-4">
+                    <div class="card border rounded"
+                         style="height:76px;background:rgba(128,128,128,0.1);">
+
+                        <div class="card-body p-2">
+
+                            <div class="d-flex align-items-center gap-2 h-100">
+
+                                <div class="rounded-circle bg-info bg-opacity-25
+                                    d-flex justify-content-center align-items-center flex-shrink-0"
+                                     style="width:44px;height:44px;">
+
+                                    <i class="bi bi-bar-chart-line-fill text-info"
+                                       style="font-size:1.25rem;"></i>
+
+                                </div>
+
+                                <div class="min-w-0 w-100">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div id="productionRateValue"
+                                             class="fw-bold text-info"
+                                             style="font-size:1rem;">
+                                            0.00
+                                        </div>
+
+                                        <span class="text-secondary fw-bold"
+                                              style="font-size:0.65rem;">
+                                            KG/hr
+                                        </span>
+
+                                    </div>
+
+                                    <div class="fw-bold text-muted text-nowrap"
+                                         style="font-size:.68rem;">
+                                        Production Rate
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT: Grade-wise Output -->
+    <div class="col-xl-6">
+
+        <div class="section-card"
+             style="height:244px;background:rgba(128,128,128,0.1);">
+
+            <div class="section-body"
+                 style="padding:12px 18px;">
+
+                <div class="section-title-wrap mb-2">
+
+                    <div class="section-icon">📊</div>
+
+                    <span>
+                        <strong>Grade-wise Output</strong>
+                    </span>
+
+                    <span class="badge-soft ms-auto">
+                        Production Feed
+                    </span>
+
+                </div>
+
+                <div class="grade-distribution"
+                     style="min-height:180px;height:180px;padding:0 10px;gap:20px;">
+
+                    <!-- Doughnut -->
+                    <div class="grade-chart-wrapper"
+                         style="width:180px;height:180px;min-width:180px;
+                        min-height:180px;flex:0 0 180px;">
+
+                        <canvas id="gradeChart"></canvas>
+
+                        <div class="grade-chart-center">
+
+                            <span class="grade-total-label">
+                                Total Output
+                            </span>
+
+                            <span id="gradeTotal"
+                                  class="grade-total-value">
+                                0.00 KG
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Legend -->
+                    <div id="gradeLegend"
+                         class="grade-legend">
+
+                        <div class="grade-legend-item">
+                            <span class="grade-dot grade-1"></span>
+
+                            <div class="grade-info">
+                                <span class="grade-title">Grade 1</span>
+                                <span id="grade1Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="grade-legend-item">
+                            <span class="grade-dot grade-2"></span>
+
+                            <div class="grade-info">
+                                <span class="grade-title">Grade 2</span>
+                                <span id="grade2Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="grade-legend-item">
+                            <span class="grade-dot grade-3"></span>
+
+                            <div class="grade-info">
+                                <span class="grade-title">Grade 3</span>
+                                <span id="grade3Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="grade-legend-item">
+                            <span class="grade-dot grade-4"></span>
+
+                            <div class="grade-info">
+                                <span class="grade-title">
+                                    Grade 4 / Rejected
+                                </span>
+
+                                <span id="grade4Legend">
+                                    0.00 KG (0.0%)
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Trend -->
+                    <div class="grade-trend-section"
+                         style="flex:1;min-width:0;height:180px;position:relative;">
+
+                        <div style="height:180px;width:100%;position:relative;">
+                            <canvas id="gradeTrendChart"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Production Output Trend -->
+<div class="row g-3 mb-2">
+
+    <div class="col-xl-12">
+
+        <div class="section-card h-100"
+             style="background:rgba(128,128,128,0.1);">
+
+            <div class="section-body">
+
+                <div class="section-title-wrap mb-2">
+
+                    <div class="section-icon">📈</div>
+
+                    <span>
+                        <strong>Output Performance</strong>
+                    </span>
+
+                    <span class="badge-soft ms-auto">
+                        Live PLC Output
+                    </span>
+
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="productionTrendChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}
+
