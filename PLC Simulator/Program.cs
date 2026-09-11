@@ -5,7 +5,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<PLC_Simulator.Services.PlcSimulationService>();
+//builder.Services.AddSingleton<MesDedmo.Services.PlcSimulationService>();
 
 var app = builder.Build();
 
@@ -19,4 +19,4 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
-app.Run();
+app.Run(); 

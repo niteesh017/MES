@@ -451,9 +451,9 @@
 //    }
 //}
 
-using PLC_Simulator.Models;
+using MESDemo.Models;
 
-namespace PLC_Simulator.Services
+namespace MESDemo.Services
 {
     public class PlcSimulationService
     {

@@ -1,4 +1,4 @@
-﻿namespace PLC_Simulator.Models
+﻿namespace MESDemo.Models
 {
     public class PlcMachineData
     {

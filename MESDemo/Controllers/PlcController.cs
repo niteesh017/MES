@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PLC_Simulator.Services;
+using MESDemo.Services;
 
-namespace PLC_Simulator.Controllers
+namespace MESDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PlcController : Controller
+    public class PlcController : ControllerBase
     {
         private readonly PlcSimulationService _simulationService;
 
@@ -13,11 +13,12 @@ namespace PLC_Simulator.Controllers
         {
             _simulationService = simulationService;
         }
+
         [HttpGet("data")]
         public IActionResult GetData()
         {
             var data = _simulationService.GenerateData();
             return Ok(data);
-        }   
+        }
     }
 }

@@ -14,13 +14,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Update="appsettings.json"
-				 CopyToOutputDirectory="Never"
-				 CopyToPublishDirectory="Never" />
+		<Content Update="appsettings.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
 
-		<Content Update="appsettings.Development.json"
-				 CopyToOutputDirectory="Never"
-				 CopyToPublishDirectory="Never" />
+		<Content Update="appsettings.Development.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Models\" />
+	  <Folder Include="Services\" />
 	</ItemGroup>
 
 </Project>

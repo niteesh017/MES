@@ -5,23 +5,19 @@ namespace MESDemo.Services
 {
     public class PlcService : IPlcService
     {
-        private readonly HttpClient _httpClient;
-        public PlcService(HttpClient httpClient) 
+        private readonly PlcSimulationService _simulationService;
+
+        public PlcService(PlcSimulationService simulationService)
         {
-            _httpClient = httpClient;
+            _simulationService = simulationService;
         }
-        public async Task<PlcDataDto?> ReadDataAsync(CancellationToken cancellationToken = default)
+
+        public Task<PlcMachineData?> ReadDataAsync(
+            CancellationToken cancellationToken = default)
         {
-            try
-            {
-                return await _httpClient.GetFromJsonAsync<PlcDataDto>(
-                    "api/Plc/data",
-                    cancellationToken);
-            }
-            catch(HttpRequestException)
-            {
-                return null;
-            }
+            var data = _simulationService.GenerateData();
+
+            return Task.FromResult<PlcMachineData?>(data);
         }
     }
 }

@@ -12,12 +12,13 @@ builder.Services.AddDbContext<MESDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("MESConnection")));
 
-builder.Services.AddHttpClient<IPlcService, PlcService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5102/");
-    client.Timeout = TimeSpan.FromSeconds(5);
-});
+// PLC Simulator
+builder.Services.AddSingleton<PlcSimulationService>();
 
+// PLC Service
+builder.Services.AddSingleton<IPlcService, PlcService>();
+
+// PLC Polling
 builder.Services.AddHostedService<PlcPollingService>();
 
 builder.Services.AddSignalR();
