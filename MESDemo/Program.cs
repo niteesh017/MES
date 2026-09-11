@@ -8,9 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+var connectionString = builder.Configuration.GetConnectionString("MESConnection");
+
+Console.WriteLine(
+    $"MES CONNECTION HOST: {connectionString?.Split(';')
+        .FirstOrDefault(x => x.StartsWith("Host=", StringComparison.OrdinalIgnoreCase))}"
+);
+
 builder.Services.AddDbContext<MESDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("MESConnection")));
+    options.UseNpgsql(connectionString));
 
 // PLC Simulator
 builder.Services.AddSingleton<PlcSimulationService>();
