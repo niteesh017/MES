@@ -1,3 +1,4 @@
+using Npgsql;
 using MESDemo.Hubs;
 using MESDemo.Services;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,22 @@ Console.WriteLine(
     $"MES CONNECTION HOST: {connectionString?.Split(';')
         .FirstOrDefault(x => x.StartsWith("Host=", StringComparison.OrdinalIgnoreCase))}"
 );
+
+if (!string.IsNullOrWhiteSpace(connectionString))
+{
+    var csb = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
+
+    Console.WriteLine(
+        $"MES DB: Host={csb.Host}, " +
+        $"Port={csb.Port}, " +
+        $"Database={csb.Database}, " +
+        $"Username={csb.Username}"
+    );
+}
+else
+{
+    Console.WriteLine("MES DB CONNECTION STRING IS NULL");
+}
 
 builder.Services.AddDbContext<MESDbContext>(options =>
     options.UseNpgsql(connectionString));
