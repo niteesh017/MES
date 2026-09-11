@@ -377,7 +377,11 @@ function updateMachineData(data) {
     updateGradeTrendChart(data);
 }
 
-connection.on("MachineDataUpdated", updateMachineData);
+// connection.on("MachineDataUpdated", updateMachineData);
+connection.on("MachineDataUpdated", data => {
+    console.log("SIGNALR DATA:", data);
+    updateMachineData(data);
+});
 
 async function loadCurrentProduction() {
     try {
