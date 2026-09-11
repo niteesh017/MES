@@ -50,4 +50,10 @@ app.MapControllerRoute(
 
 app.MapHub<MesHub>("/mesHub");
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<MESDbContext>();
+    db.Database.Migrate();
+}
+
 app.Run();
